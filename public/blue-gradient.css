@@ -1,0 +1,4 @@
+/* Blue gradient CSS */
+.blue-gradient-bg {
+  background: linear-gradient(135deg, #d7e6ff 0%, #a3c4ff 100%);
+}
