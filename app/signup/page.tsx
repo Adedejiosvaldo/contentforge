@@ -10,6 +10,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@heroui/react";
 import { MailIcon, LockIcon, UserIcon } from "../components/icons/FormIcons";
+import { signIn } from "next-auth/react";
+import bcrypt from "bcryptjs";
 
 // Define validation schema
 const signupSchema = z.object({
@@ -48,10 +50,31 @@ export default function SignUp() {
     },
   });
 
+  const [generalError, setGeneralError] = useState<string | null>(null);
+
   const onSubmit = async (data: SignupFormData) => {
-    // Here you would typically call your registration API
-    // For demo, just log
-    console.log("Form submitted:", data);
+    setGeneralError(null); // Clear previous general errors
+    try {
+      // Call signup API to create user and hash password
+      const res = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        setGeneralError(error.message || "Signup failed");
+        return;
+      }
+      // Auto-login after signup
+      await signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        callbackUrl: "/",
+      });
+    } catch (err) {
+      setGeneralError("An unexpected error occurred. Please try again.");
+    }
   };
 
   return (
@@ -181,10 +204,15 @@ export default function SignUp() {
                     Privacy Policy
                   </Link>
                 </label>
+                {errors.agreeTerms && (
+                  <p className="mt-1 text-sm text-red-500">
+                    {errors.agreeTerms.message}
+                  </p>
+                )}
               </div>
-              {errors.agreeTerms && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.agreeTerms.message}
+              {generalError && (
+                <p className="mt-1 text-sm text-red-500 text-center">
+                  {generalError}
                 </p>
               )}
               <Button
