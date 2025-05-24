@@ -182,7 +182,7 @@ export default function Home() {
         {/* Features section with enhanced UI */}
         <section
           id="features"
-          className="w-full py-24 bg-gradient-to-b from-[var(--background)] to-[var(--background)]/95 relative overflow-hidden"
+          className="w-full py-14 bg-gradient-to-b from-[var(--background)] to-[var(--background)]/95 relative overflow-hidden"
         >
           {/* Background decorative elements */}
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--primary-color)]/20 to-transparent"></div>
@@ -192,7 +192,7 @@ export default function Home() {
           <div className="container mx-auto px-6 max-w-6xl relative z-10">
             <div className="text-center mb-20">
               <div className="inline-block mb-3">
-                <span className="bg-[var(--primary-color)]/10 text-[var(--primary-color)] text-sm font-medium py-1 px-3 rounded-full">
+                <span className="bg-[var(--primary-color)]/10 p-5 border border-[var(--primary-color)]/20 text-[var(--text-color)] text-sm font-medium py-1 px-3 rounded-full">
                   Why Choose Us
                 </span>
               </div>
@@ -403,6 +403,479 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Pricing section */}
+        <section
+          id="pricing"
+          className="w-full py-5 bg-[var(--background)] relative overflow-hidden"
+        >
+          {/* Background decorative elements */}
+          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[var(--accent-color)]/30 to-transparent"></div>
+          <div className="absolute top-20 left-10 w-60 h-60 rounded-full bg-[var(--accent-color)]/5 filter blur-[80px] animate-pulse-slow"></div>
+          <div className="absolute bottom-40 right-10 w-80 h-80 rounded-full bg-[var(--primary-color)]/5 filter blur-[100px] animate-float-delay"></div>
+
+          {/* Added decorative elements for enhanced visual appeal */}
+          <div className="absolute top-1/3 right-1/4 w-40 h-40 rounded-full bg-[var(--primary-color)]/8 filter blur-[50px] animate-float"></div>
+          <div className="absolute bottom-1/4 left-1/3 w-30 h-30 rounded-full bg-[var(--accent-color)]/8 filter blur-[40px] animate-float-delay"></div>
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.02]"></div>
+
+          <div className="container mx-auto px-6 max-w-6xl relative z-10">
+            <div className="text-center mb-16">
+              <div className="inline-block mb-3 animate-bounce-subtle">
+                <span className="bg-gradient-to-r from-[var(--primary-color)]/20 to-[var(--accent-color)]/20 text-[var(--text-color)] text-sm font-bold py-1.5 px-4 rounded-full border border-[var(--primary-color)]/20 shadow-sm">
+                  Limited Time Offer
+                </span>
+              </div>
+              <h2 className="text-3xl md:text-5xl font-bold text-[var(--text-color)] mb-6 relative">
+                <span className="relative inline-block">
+                  Simple, Transparent Pricing
+                  <svg
+                    className="absolute -bottom-2 left-0 w-full h-2 text-[var(--primary-color)]/30"
+                    viewBox="0 0 300 12"
+                    preserveAspectRatio="none"
+                  >
+                    <path
+                      d="M0,0 C75,12 125,12 200,6 C250,0 275,6 300,12 L300,12 L0,12 Z"
+                      fill="currentColor"
+                    ></path>
+                  </svg>
+                </span>
+              </h2>
+              <p className="text-xl text-[var(--text-light)] max-w-3xl mx-auto mb-2">
+                No complicated tiers. Start creating amazing content today.
+              </p>
+              <div className="flex justify-center mt-10 mb-14">
+                <div className="inline-flex p-1 bg-[var(--card-bg)]/80 rounded-full border border-[var(--border-color)] shadow-lg">
+                  <button className="px-8 py-2.5 rounded-full bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white font-medium shadow-md transition-all duration-300 hover:shadow-lg hover:shadow-[var(--primary-color)]/20">
+                    Free
+                  </button>
+                  <button className="px-8 py-2.5 rounded-full text-[var(--text-light)] font-medium transition-all duration-300 hover:bg-[var(--card-bg)]/50">
+                    Pro (Coming Soon)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Pricing cards - Enhanced UI */}
+            <div className="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+              {/* Free tier card */}
+              <div className="group relative transform transition-all duration-500 hover:scale-105">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-[var(--accent-color)]/30 to-[var(--primary-color)]/30 rounded-3xl blur opacity-70 group-hover:opacity-100 transition duration-500 animate-pulse-slow"></div>
+                <div className="glass backdrop-blur-sm bg-[var(--card-bg)]/60 rounded-3xl p-8 border border-[var(--border-color)] shadow-xl relative h-full flex flex-col">
+                  {/* Popular badge */}
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-[var(--primary-color)] to-[var(--accent-color)] px-6 py-1.5 rounded-full shadow-lg"></div>
+
+                  <div className="flex justify-between items-start mb-6 mt-4">
+                    <div>
+                      <h3 className="text-2xl font-bold text-[var(--text-color)]">
+                        Free Access
+                      </h3>
+                      <p className="text-[var(--text-light)]">
+                        For everyone, no card needed
+                      </p>
+                    </div>
+                    <div className="bg-[var(--primary-color)]/10 rounded-full p-3 group-hover:bg-[var(--primary-color)]/20 transition-colors duration-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-[var(--primary-color)]"
+                      >
+                        <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline>
+                        <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="mb-6 flex items-baseline">
+                    <div className="flex items-start">
+                      <span className="text-lg font-medium mr-1 text-[var(--text-light)] mt-1">
+                        ₦
+                      </span>
+                      <span className="text-5xl font-bold bg-clip-text text-[var(--text-light)]">
+                        0
+                      </span>
+                    </div>
+                    <span className="text-[var(--text-light)] ml-1">
+                      /forever
+                    </span>
+                    <div className="ml-3 bg-green-100 dark:bg-green-900/30 rounded-full px-3 py-0.5 flex items-center animate-bounce-subtle">
+                      <span className="text-xs font-medium text-green-700 dark:text-green-400">
+                        Free Forever!
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-[var(--primary-color)]/10 to-[var(--accent-color)]/10 p-6 rounded-2xl mb-8 relative overflow-hidden group-hover:scale-[1.02] transition-transform">
+                    <div className="absolute -right-4 -top-4 w-24 h-24 bg-[var(--primary-color)]/10 rounded-full blur-xl opacity-70"></div>
+                    <div className="absolute -left-4 -bottom-4 w-24 h-24 bg-[var(--accent-color)]/10 rounded-full blur-xl opacity-70"></div>
+
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <span className="text-3xl font-extrabold bg-clip-text  text-[var(--text-light)]">
+                        Free! Free! Free!
+                      </span>
+                    </div>
+                    <p className="text-center text-[var(--text-light)]">
+                      For a limited time, we&apos;re offering our full platform
+                      completely free.
+                    </p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8 flex-grow">
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-green-600 dark:text-green-400"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Create content for all popular platforms
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-green-600 dark:text-green-400"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        AI-powered content optimization
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-green-600 dark:text-green-400"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Up to 100 posts per month
+                      </span>
+                    </li>
+                  </ul>
+
+                  <button className="w-full py-4 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[var(--primary-color)]/20 transition-all duration-300 flex items-center justify-center gap-2 group-hover:scale-[1.02] relative overflow-hidden">
+                    <span className="relative z-10">Get Started Now</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="group-hover:translate-x-1 transition-transform relative z-10"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                    <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                  </button>
+                </div>
+              </div>
+
+              {/* Pro tier card (coming soon) */}
+              <div className="group relative transform transition-all duration-500 hover:scale-105">
+                <div className="absolute -inset-0.5 bg-gradient-to-br from-[var(--accent-color)]/20 to-[var(--primary-color)]/20 rounded-3xl blur opacity-50 group-hover:opacity-70 transition duration-500"></div>
+                <div className="glass backdrop-blur-sm bg-[var(--card-bg)]/40 rounded-3xl p-8 border border-[var(--border-color)] shadow-lg relative h-full flex flex-col">
+                  {/* Coming soon ribbon */}
+                  <div className="absolute -top-1 -right-1 w-28 h-28 overflow-hidden">
+                    <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 rotate-45 bg-[var(--accent-color)]/80 text-white text-xs font-bold py-1 px-12 shadow-md">
+                      SOON
+                    </div>
+                  </div>
+
+                  <div className="flex justify-between items-start mb-6">
+                    <div>
+                      <h3 className="text-2xl font-bold text-[var(--text-color)]">
+                        Pro Access
+                      </h3>
+                      <p className="text-[var(--text-light)]">
+                        For power users
+                      </p>
+                    </div>
+                    <div className="bg-[var(--accent-color)]/10 rounded-full p-3 group-hover:bg-[var(--accent-color)]/20 transition-colors duration-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-[var(--accent-color)]"
+                      >
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                      </svg>
+                    </div>
+                  </div>
+
+                  <div className="mb-6 flex items-baseline opacity-70">
+                    <div className="flex items-start">
+                      <span className="text-lg font-medium mr-1 text-[var(--text-light)] mt-1">
+                        ₦
+                      </span>
+                      <span className="text-5xl font-bold text-[var(--text-color)]">
+                        15,000
+                      </span>
+                    </div>
+                    <span className="text-[var(--text-light)] ml-1">
+                      /month
+                    </span>
+                    <div className="ml-3 bg-[var(--accent-color)]/10 rounded-full px-3 py-0.5 flex items-center">
+                      <span className="text-xs font-medium text-[var(--accent-color)]">
+                        Coming Soon
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="bg-[var(--card-bg)]/50 p-6 rounded-2xl mb-8 border border-dashed border-[var(--border-color)] relative overflow-hidden shadow-inner">
+                    <div className="flex items-center justify-center gap-3 mb-4">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="text-[var(--accent-color)] opacity-70 animate-pulse-slow"
+                      >
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M12 6v6l4 2"></path>
+                      </svg>
+                      <span className="text-2xl font-bold text-[var(--text-color)] opacity-70">
+                        Coming Soon
+                      </span>
+                    </div>
+                    <p className="text-center text-[var(--text-light)]">
+                      Advanced features and unlimited access.
+                    </p>
+                  </div>
+
+                  <ul className="space-y-4 mb-8 flex-grow opacity-70">
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-[var(--accent-color)]/10 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-[var(--accent-color)]"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Everything in Free plan
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-[var(--accent-color)]/10 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-[var(--accent-color)]"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Unlimited posts per month
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-[var(--accent-color)]/10 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-[var(--accent-color)]"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Advanced analytics & insights
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="h-6 w-6 rounded-full bg-[var(--accent-color)]/10 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          className="text-[var(--accent-color)]"
+                        >
+                          <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                      </div>
+                      <span className="text-[var(--text-color)]">
+                        Priority support
+                      </span>
+                    </li>
+                  </ul>
+
+                  <button
+                    disabled
+                    className="w-full py-4 bg-[var(--accent-color)]/50 text-white font-medium rounded-xl transition-all duration-300 flex items-center justify-center gap-2 opacity-70 cursor-not-allowed group-hover:bg-[var(--accent-color)]/60"
+                  >
+                    Join Waitlist
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              {/* FAQ section - Enhanced */}
+              <div className="col-span-1 md:col-span-2 mt-12 glass backdrop-blur-sm bg-[var(--card-bg)]/30 rounded-2xl p-8 border border-[var(--border-color)] shadow-lg transform transition-transform hover:scale-[1.02] duration-500">
+                <h4 className="text-2xl font-bold text-[var(--text-color)] mb-6 flex items-center gap-3 pb-4 border-b border-[var(--border-color)]">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="text-[var(--primary-color)]"
+                  >
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                  Frequently Asked Questions
+                </h4>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="bg-[var(--background)]/50 p-5 rounded-xl border border-[var(--border-color)] hover:border-[var(--primary-color)]/30 transition-colors duration-300 hover:shadow-md">
+                    <p className="font-medium text-[var(--text-color)] mb-2">
+                      Is it really free?
+                    </p>
+                    <p className="text-[var(--text-light)]">
+                      Yes! We&apos;re currently offering our platform completely
+                      free of charge for early adopters. No credit card
+                      required.
+                    </p>
+                  </div>
+                  <div className="bg-[var(--background)]/50 p-5 rounded-xl border border-[var(--border-color)] hover:border-[var(--primary-color)]/30 transition-colors duration-300 hover:shadow-md">
+                    <p className="font-medium text-[var(--text-color)] mb-2">
+                      When will Pro be available?
+                    </p>
+                    <p className="text-[var(--text-light)]">
+                      Pro features are currently in development and will be
+                      available soon. Join our waitlist to be notified when it
+                      launches.
+                    </p>
+                  </div>
+                  <div className="bg-[var(--background)]/50 p-5 rounded-xl border border-[var(--border-color)] hover:border-[var(--primary-color)]/30 transition-colors duration-300 hover:shadow-md">
+                    <p className="font-medium text-[var(--text-color)] mb-2">
+                      What&apos;s included in the free plan?
+                    </p>
+                    <p className="text-[var(--text-light)]">
+                      Our free plan includes access to all core features
+                      including AI content generation, basic analytics, and up
+                      to 100 posts per month.
+                    </p>
+                  </div>
+                  <div className="bg-[var(--background)]/50 p-5 rounded-xl border border-[var(--border-color)] hover:border-[var(--primary-color)]/30 transition-colors duration-300 hover:shadow-md">
+                    <p className="font-medium text-[var(--text-color)] mb-2">
+                      How much will Pro cost?
+                    </p>
+                    <p className="text-[var(--text-light)]">
+                      Pro will be priced at ₦15,000 per month when launched.
+                      Early waitlist members may receive special pricing.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Enhanced dark section with glassmorphism effect */}
         <section className="w-full py-24 bg-[var(--accent-color)] relative overflow-hidden">
           {/* Background decorative elements */}
@@ -431,7 +904,9 @@ export default function Home() {
               </h2>
 
               <p className="text-xl text-[var(--foreground)]/80 mb-10 max-w-2xl mx-auto">
-                Transform a single concept into tailored content for every platform. From Twitter threads to Instagram stories, let AI craft the perfect post format.
+                Transform a single concept into tailored content for every
+                platform. From Twitter threads to Instagram stories, let AI
+                craft the perfect post format.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
