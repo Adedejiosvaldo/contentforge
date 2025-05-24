@@ -57,15 +57,13 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Handle OAuth redirects
+      // Prevent redirecting to API routes
       if (url.startsWith(baseUrl)) {
-        // For internal URLs, we'll handle redirection based on user setup status
-        if (url === `${baseUrl}/dashboard` || url === baseUrl) {
-          return baseUrl + "/api/auth/handle-oauth-login";
+        if (url.includes("/api/")) {
+          return baseUrl + "/dashboard";
         }
         return url;
       }
-      // Default fallback
       return baseUrl;
     },
   },

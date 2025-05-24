@@ -23,7 +23,7 @@ export default function Login() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [error, setError] = useState("");
-  
+
   // Redirect if already authenticated
   useEffect(() => {
     if (status === "authenticated") {
@@ -52,14 +52,24 @@ export default function Login() {
         email: data.email,
         password: data.password,
       });
-      
+      console.log("signIn result", result); // DEBUG
       if (result?.error) {
-        setError("Invalid email or password");
+        setError(result.error || "Invalid email or password");
       } else {
         // Check if user needs to complete setup
-        const response = await fetch(`/api/auth/check-setup?email=${encodeURIComponent(data.email)}`);
-        const { needsSetup } = await response.json();
-        
+        const response = await fetch(
+          `/api/auth/check-setup?email=${encodeURIComponent(data.email)}`
+        );
+        const debugText = await response.text(); // DEBUG
+        console.log("/api/auth/check-setup response", debugText); // DEBUG
+        let needsSetup = false;
+        try {
+          const json = JSON.parse(debugText);
+          needsSetup = json.needsSetup;
+        } catch (e) {
+          setError("Unexpected response from server: " + debugText);
+          return;
+        }
         if (needsSetup) {
           router.push("/setup");
         } else {
@@ -179,9 +189,13 @@ export default function Login() {
             </div>
 
             <div className="flex space-x-4">
-              <button 
+              <button
                 type="button"
-                onClick={() => signIn('google', { callbackUrl: '/api/auth/handle-oauth-login' })}
+                onClick={() =>
+                  signIn("google", {
+                    callbackUrl: "/api/auth/handle-oauth-login",
+                  })
+                }
                 className="flex-1 flex items-center justify-center gap-2 py-3 bg-[var(--background)]/40 hover:bg-[var(--background)]/60 border border-[var(--border-color)] rounded-xl transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 48 48" fill="none">
@@ -204,9 +218,13 @@ export default function Login() {
                 </svg>
                 <span className="text-sm text-[var(--text-color)]">Google</span>
               </button>
-              <button 
+              <button
                 type="button"
-                onClick={() => signIn('github', { callbackUrl: '/api/auth/handle-oauth-login' })}
+                onClick={() =>
+                  signIn("github", {
+                    callbackUrl: "/api/auth/handle-oauth-login",
+                  })
+                }
                 className="flex-1 flex items-center justify-center gap-2 py-3 bg-[var(--background)]/40 hover:bg-[var(--background)]/60 border border-[var(--border-color)] rounded-xl transition-colors"
               >
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
