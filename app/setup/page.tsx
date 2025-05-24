@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button, Input, Checkbox } from "@heroui/react";
+import { Button, Input, Checkbox, Select, SelectItem } from "@heroui/react";
 
 export default function Setup() {
   const { data: session, status } = useSession();
@@ -15,14 +15,232 @@ export default function Setup() {
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     displayName: "",
+    company: "",
+    role: "",
+    industry: "",
+    niche: "",
+    audience: [] as string[],
+    audienceDesc: "",
+    brandVoice: [] as string[],
+    keywords: "",
     bio: "",
-    interests: [],
+    interests: [] as string[],
     preferences: {
       emailNotifications: true,
       contentReminders: true,
       analyticsReports: true,
     },
   });
+
+  // Add all 6 steps for the wizard
+  const totalSteps = 6;
+
+  // Step content definitions
+  const stepContent = [
+    // Step 1: Get Started
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">Let's get started</div>
+      </div>
+      <div className="space-y-4">
+        <Input
+          label="Your Name"
+          value={formData.displayName}
+          onValueChange={(val) => updateFormData("displayName", val)}
+          className="w-full"
+        />
+        <Input
+          label="Company (optional)"
+          value={formData.company || ""}
+          onValueChange={(val) => updateFormData("company", val)}
+          className="w-full"
+        />
+        <Input
+          label="Role (optional)"
+          value={formData.role || ""}
+          onValueChange={(val) => updateFormData("role", val)}
+          className="w-full"
+        />
+      </div>
+    </>,
+    // Step 2: Industry
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">
+          What industry are you in?
+        </div>
+      </div>
+      <div className="space-y-4">
+        <Select
+          label="Select your industry"
+          selectedKeys={formData.industry ? [formData.industry] : []}
+          onSelectionChange={(keys) =>
+            updateFormData("industry", Array.from(keys)[0] as string)
+          }
+          className="w-full"
+          placeholder="Select your industry"
+        >
+          {[
+            { key: "Marketing", label: "Marketing" },
+            { key: "Tech", label: "Tech" },
+            { key: "Education", label: "Education" },
+            { key: "Finance", label: "Finance" },
+            { key: "Healthcare", label: "Healthcare" },
+            { key: "Other", label: "Other" },
+          ].map((industry) => (
+            <SelectItem key={industry.key}>{industry.label}</SelectItem>
+          ))}
+        </Select>
+        <Input
+          label="What's your niche or area of expertise?"
+          value={formData.niche || ""}
+          onValueChange={(val) => updateFormData("niche", val)}
+          className="w-full"
+        />
+      </div>
+    </>,
+    // Step 3: Audience
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">
+          Who is your ideal audience?
+        </div>
+        <div className="text-[var(--text-light)] text-sm mb-4">
+          Select all that apply or describe your ideal audience in your own
+          words.
+        </div>
+      </div>
+      <div className="space-y-2 space-x-2 mb-4">
+        {[
+          "Entrepreneurs",
+          "Students",
+          "Parents",
+          "Small Business Owners",
+          "Tech Enthusiasts",
+          "Creatives",
+        ].map((aud) => (
+          <Checkbox
+            key={aud}
+            isSelected={formData.audience?.includes(aud)}
+            onValueChange={(checked) => {
+              setFormData((prev) => {
+                const arr = prev.audience ? [...prev.audience] : [];
+                if (checked) arr.push(aud);
+                else arr.splice(arr.indexOf(aud), 1);
+                return { ...prev, audience: arr };
+              });
+            }}
+          >
+            {aud}
+          </Checkbox>
+        ))}
+      </div>
+      <Input
+        label="Describe your ideal audience"
+        value={formData.audienceDesc || ""}
+        onValueChange={(val) => updateFormData("audienceDesc", val)}
+        className="w-full"
+      />
+    </>,
+    // Step 4: Brand Voice
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">
+          What's your brand voice and tone?
+        </div>
+        <div className="text-[var(--text-light)] text-sm mb-4">
+          Select the adjectives that best describe your brand's communication
+          style. This helps us tailor content to resonate with your audience.
+        </div>
+      </div>
+      <div className="flex flex-wrap gap-3 justify-center mb-4">
+        {[
+          "Formal",
+          "Casual",
+          "Humorous",
+          "Authoritative",
+          "Inspirational",
+          "Friendly",
+          "Bold",
+        ].map((tone) => (
+          <Button
+            key={tone}
+            variant={formData.brandVoice?.includes(tone) ? "solid" : "flat"}
+            color="primary"
+            onClick={() => {
+              setFormData((prev) => {
+                const arr = prev.brandVoice ? [...prev.brandVoice] : [];
+                if (arr.includes(tone)) arr.splice(arr.indexOf(tone), 1);
+                else arr.push(tone);
+                return { ...prev, brandVoice: arr };
+              });
+            }}
+          >
+            {tone}
+          </Button>
+        ))}
+      </div>
+    </>,
+    // Step 5: Keywords
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">Keywords and Hashtags</div>
+        <div className="text-[var(--text-light)] text-sm mb-4">
+          List your frequently used keywords, brand terms, or specific hashtags
+          you want the AI to prioritize. This helps the AI understand your brand
+          and audience.
+        </div>
+      </div>
+      <Input
+        label="Enter keywords and hashtags"
+        value={formData.keywords || ""}
+        onValueChange={(val) => updateFormData("keywords", val)}
+        className="w-full"
+      />
+    </>,
+    // Step 6: Review
+    <>
+      <div className="text-center mb-8">
+        <div className="text-lg font-semibold mb-2">
+          Review your information
+        </div>
+      </div>
+      <div className="space-y-2 mb-6">
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Name</span>
+          <span>{formData.displayName}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Email</span>
+          <span>{session?.user?.email}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Industry</span>
+          <span>{formData.industry}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Company</span>
+          <span>{formData.company}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Role</span>
+          <span>{formData.role}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Target Audience</span>
+          <span>{formData.audience?.join(", ") || formData.audienceDesc}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Brand Voice</span>
+          <span>{formData.brandVoice?.join(", ")}</span>
+        </div>
+        <div className="flex justify-between border-b py-2">
+          <span className="font-medium">Keywords</span>
+          <span>{formData.keywords}</span>
+        </div>
+      </div>
+    </>,
+  ];
 
   // Redirect if not authenticated
   if (status === "unauthenticated") {
@@ -171,6 +389,15 @@ export default function Setup() {
     }
   };
 
+  // Navigation logic
+  const handleNextStep = async () => {
+    if (currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      await finishSetup();
+    }
+  };
+
   const interests = [
     "Content Marketing",
     "Social Media",
@@ -203,155 +430,21 @@ export default function Setup() {
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
         <div className="w-full max-w-2xl">
           <div className="glass backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-xl border border-[var(--border-color)] p-8 md:p-10 relative overflow-hidden">
-            {/* Decorative elements */}
-            <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[var(--primary-color)]/30 to-transparent"></div>
-            <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-color)]/10 rounded-full filter blur-[80px] -z-10"></div>
-            <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[var(--accent-color)]/10 rounded-full filter blur-[80px] -z-10"></div>
-
             {/* Progress bar */}
             <div className="mb-8">
-              <div className="flex justify-between mb-2">
-                {[1, 2, 3].map((step) => (
-                  <div
-                    key={step}
-                    className={`w-8 h-8 rounded-full flex items-center justify-center
-                      ${
-                        currentStep >= step
-                          ? "bg-[var(--primary-color)] text-white"
-                          : "bg-[var(--background)]/40 text-[var(--text-light)]"
-                      }`}
-                  >
-                    {step}
-                  </div>
-                ))}
+              <div className="text-sm font-medium mb-2 text-left">
+                Step {currentStep} of {totalSteps}
               </div>
-              <div className="relative h-2 bg-[var(--background)]/30 rounded-full overflow-hidden">
+              <div className="w-full h-2 bg-gray-200 rounded-full">
                 <div
-                  className="absolute top-0 left-0 h-full bg-[var(--primary-color)]"
-                  style={{ width: `${(currentStep / 3) * 100}%` }}
+                  className="h-2 bg-[var(--primary-color)] rounded-full transition-all duration-300"
+                  style={{ width: `${(currentStep / totalSteps) * 100}%` }}
                 ></div>
               </div>
             </div>
 
-            {/* Step 1: Basic Information */}
-            {currentStep === 1 && (
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-6">
-                  Tell us about yourself
-                </h2>
-                <div className="space-y-5">
-                  <Input
-                    label="Display Name"
-                    type="text"
-                    placeholder="How should we address you?"
-                    value={formData.displayName}
-                    onChange={(e) =>
-                      updateFormData("displayName", e.target.value)
-                    }
-                    variant="bordered"
-                    className="w-full"
-                  />
-                  <div>
-                    <label className="block text-sm font-medium mb-2">
-                      Bio
-                    </label>
-                    <textarea
-                      className="w-full h-24 p-3 bg-[var(--background)]/30 border border-[var(--border-color)] rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)]"
-                      placeholder="Tell us a little about yourself..."
-                      value={formData.bio}
-                      onChange={(e) => updateFormData("bio", e.target.value)}
-                    ></textarea>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Step 2: Interests */}
-            {currentStep === 2 && (
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-6">
-                  Select your interests
-                </h2>
-                <p className="text-center text-[var(--text-light)] mb-4">
-                  This helps us personalize your content suggestions
-                </p>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {interests.map((interest) => (
-                    <div
-                      key={interest}
-                      onClick={() => handleInterestToggle(interest)}
-                      className={`p-3 rounded-lg cursor-pointer text-center text-sm transition-colors ${
-                        formData.interests.includes(interest)
-                          ? "bg-[var(--primary-color)] text-white"
-                          : "bg-[var(--background)]/30 text-[var(--text-color)] hover:bg-[var(--background)]/50"
-                      }`}
-                    >
-                      {interest}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Step 3: Preferences */}
-            {currentStep === 3 && (
-              <div>
-                <h2 className="text-2xl font-bold text-center mb-6">
-                  Set your preferences
-                </h2>
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between p-4 bg-[var(--background)]/20 rounded-xl">
-                    <div>
-                      <h3 className="font-medium">Email Notifications</h3>
-                      <p className="text-sm text-[var(--text-light)]">
-                        Receive updates and important alerts
-                      </p>
-                    </div>
-                    <Checkbox
-                      isSelected={formData.preferences.emailNotifications}
-                      onValueChange={(checked) =>
-                        handlePreferenceChange("emailNotifications", checked)
-                      }
-                    />
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-[var(--background)]/20 rounded-xl">
-                    <div>
-                      <h3 className="font-medium">Content Reminders</h3>
-                      <p className="text-sm text-[var(--text-light)]">
-                        Get reminded to create new content
-                      </p>
-                    </div>
-                    <Checkbox
-                      isSelected={formData.preferences.contentReminders}
-                      onValueChange={(checked) =>
-                        handlePreferenceChange("contentReminders", checked)
-                      }
-                    />
-                  </div>
-                  <div className="flex items-center justify-between p-4 bg-[var(--background)]/20 rounded-xl">
-                    <div>
-                      <h3 className="font-medium">Analytics Reports</h3>
-                      <p className="text-sm text-[var(--text-light)]">
-                        Receive periodic performance reports
-                      </p>
-                    </div>
-                    <Checkbox
-                      isSelected={formData.preferences.analyticsReports}
-                      onValueChange={(checked) =>
-                        handlePreferenceChange("analyticsReports", checked)
-                      }
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Error Message */}
-            {error && (
-              <div className="mt-4 p-3 text-sm bg-red-100 border border-red-200 rounded-lg text-red-800">
-                {error}
-              </div>
-            )}
+            {/* Step content */}
+            {stepContent[currentStep - 1]}
 
             {/* Navigation Buttons */}
             <div className="flex justify-between mt-8">
@@ -360,16 +453,21 @@ export default function Setup() {
                 onClick={handlePrevious}
                 isDisabled={currentStep === 1 || isSubmitting}
               >
-                Previous
+                Back
               </Button>
               <Button
                 color="primary"
-                onClick={handleNext}
+                onClick={handleNextStep}
                 isLoading={isSubmitting}
               >
-                {currentStep === 3 ? "Finish" : "Next"}
+                {currentStep === totalSteps ? "Complete Setup" : "Next"}
               </Button>
             </div>
+            {error && (
+              <div className="mt-4 p-3 text-sm bg-red-100 border border-red-200 rounded-lg text-red-800">
+                {error}
+              </div>
+            )}
           </div>
         </div>
       </main>
