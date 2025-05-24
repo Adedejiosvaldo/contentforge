@@ -18,10 +18,57 @@ model User {
   password          String?  // null for OAuth users
   image             String?
   hasCompletedSetup Boolean  @default(false)
+
+  // Setup wizard information
+  company           String?
+  role              String?
+  industry          String?
+  niche             String?
+  audienceDesc      String?
+  keywords          String?
+  bio               String?
+
+  // Preferences
+  emailNotifications Boolean @default(true)
+  contentReminders   Boolean @default(true)
+  analyticsReports   Boolean @default(true)
+
+  // Relations
   accounts          Account[]
   sessions          Session[]
+  audience          UserAudience[]
+  brandVoice        UserBrandVoice[]
+  interests         UserInterest[]
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+}
+
+model UserAudience {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  audience  String
+
+  @@unique([userId, audience])
+}
+
+model UserBrandVoice {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  voice     String
+
+  @@unique([userId, voice])
+}
+
+model UserInterest {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  interest  String
+
+  @@unique([userId, interest])
 }
 
 model Account {
