@@ -139,9 +139,14 @@ export default function Setup() {
             <Select
               label="Select your industry"
               selectedKeys={field.value ? [field.value] : []}
-              onSelectionChange={(keys) =>
-                field.onChange(Array.from(keys)[0] as string)
-              }
+              onSelectionChange={(keys) => {
+                const value = Array.from(keys)[0] as string;
+                field.onChange(value);
+                // Clear validation error when a selection is made
+                if (value && errors.industry) {
+                  trigger("industry");
+                }
+              }}
               className={`w-full ${
                 errors.industry ? "border-red-500 ring-2 ring-red-500" : ""
               }`}
@@ -513,11 +518,6 @@ export default function Setup() {
                 {currentStep === totalSteps ? "Complete Setup" : "Next"}
               </Button>
             </div>
-            {/* {error && (
-              <div className="mt-4 p-3 text-sm bg-red-100 border border-red-200 rounded-lg text-red-800 animate-pulse">
-                {error}
-              </div>
-            )} */}
           </div>
         </div>
       </main>

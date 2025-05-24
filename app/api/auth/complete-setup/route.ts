@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { getServerSession } from "next-auth";
-import { authOptions } from "../[...nextauth]";
+import { authOptions } from "../[...nextauth]/route";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +14,28 @@ export async function POST(req: NextRequest) {
     }
 
     // Get the setup data
-    const { displayName, bio, interests, preferences } = await req.json();
+    const {
+      displayName,
+      company,
+      role,
+      industry,
+      niche,
+      audience,
+      audienceDesc,
+      brandVoice,
+      keywords,
+      bio,
+      interests,
+      preferences,
+    } = await req.json();
+
+    console.log("Setup data received:", {
+      displayName,
+      industry,
+      audience,
+      brandVoice,
+      keywords,
+    });
 
     // Update the user with the provided info and mark setup as complete
     await prisma.user.update({
@@ -23,7 +44,7 @@ export async function POST(req: NextRequest) {
         name: displayName || session.user.name,
         hasCompletedSetup: true,
         // Store additional setup data as needed
-        // You could create additional models for user preferences, interests, etc.
+        // In a real app, you might want to store these in separate tables with relationships
       },
     });
 
