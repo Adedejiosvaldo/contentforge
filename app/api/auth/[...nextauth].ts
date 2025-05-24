@@ -41,11 +41,32 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt",
   },
   callbacks: {
-    async session({ session, token, user }) {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+        // Add additional user data to token if needed
+      }
+      return token;
+    },
+    async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub;
+        session.user.id = token.id as string;
+        // You can add additional session data here if needed
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Handle OAuth redirects
+      if (url.startsWith(baseUrl)) {
+        // For internal URLs, we'll handle redirection based on user setup status
+        if (url === `${baseUrl}/dashboard` || url === baseUrl) {
+          return baseUrl + "/api/auth/handle-oauth-login";
+        }
+        return url;
+      }
+      // Default fallback
+      return baseUrl;
     },
   },
   secret: process.env.NEXTAUTH_SECRET,
