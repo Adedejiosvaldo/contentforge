@@ -41,27 +41,29 @@ export default function Home() {
           </a>
         </nav>
         <div className="flex items-center gap-3">
-          <button className="ripple-container px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
-            Get Started
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ml-1"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
-          <Link href={"/login"} className="hidden md:inline-block">
+          <Link href="/signup">
+            <button className="ripple-container px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
+              Get Started
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="ml-1"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </Link>
+          <Link href="/login" className="hidden md:inline-block">
             <button className=" px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
-              Login{" "}
+              Sign In{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -130,22 +132,24 @@ export default function Home() {
                     presence with engaging, platform-optimized content.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
-                    <button className="ripple-container px-6 py-3 bg-[var(--primary-color)] text-white font-medium rounded-full hover:bg-[var(--primary-hover)] transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
-                      Start Creating
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M12 5v14M19 12l-7 7-7-7" />
-                      </svg>
-                    </button>
+                    <Link href="/signup">
+                      <button className="ripple-container px-6 py-3 bg-[var(--primary-color)] text-white font-medium rounded-full hover:bg-[var(--primary-hover)] transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
+                        Start Creating
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M12 5v14M19 12l-7 7-7-7" />
+                        </svg>
+                      </button>
+                    </Link>
                     <a
                       href="#demo"
                       className="text-[var(--text-light)] hover:text-[var(--text-color)] transition-colors flex items-center gap-2"
@@ -364,7 +368,7 @@ export default function Home() {
                   <p className="text-[var(--text-light)] mb-6">
                     Our intelligent content creator understands the unique
                     characteristics of each social media platform, ensuring your
-                    message resonates perfectly wherever it's shared.
+                    message resonates perfectly wherever it&apos;s shared.
                   </p>
                   <div className="flex flex-wrap gap-3">
                     <span className="bg-[var(--primary-color)]/10 text-[var(--text-light)] text-sm py-1 px-3 rounded-full">
@@ -592,25 +596,27 @@ export default function Home() {
                     </li>
                   </ul>
 
-                  <button className="w-full py-4 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[var(--primary-color)]/20 transition-all duration-300 flex items-center justify-center gap-2 group-hover:scale-[1.02] relative overflow-hidden">
-                    <span className="relative z-10">Get Started Now</span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="group-hover:translate-x-1 transition-transform relative z-10"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                    <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-                  </button>
+                  <Link href="/signup" className="w-full">
+                    <button className="w-full py-4 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[var(--primary-color)]/20 transition-all duration-300 flex items-center justify-center gap-2 group-hover:scale-[1.02] relative overflow-hidden">
+                      <span className="relative z-10">Get Started Now</span>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="group-hover:translate-x-1 transition-transform relative z-10"
+                      >
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                      </svg>
+                      <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                    </button>
+                  </Link>
                 </div>
               </div>
 
