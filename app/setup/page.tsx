@@ -6,30 +6,66 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button, Input, Checkbox, Select, SelectItem } from "@heroui/react";
+import { useForm, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// Zod schema for validation
+const setupSchema = z.object({
+  displayName: z.string().min(1, "Name is required"),
+  company: z.string().optional(),
+  role: z.string().optional(),
+  industry: z.string().min(1, "Industry is required"),
+  niche: z.string().optional(),
+  audience: z.array(z.string()).min(1, "Select at least one audience"),
+  audienceDesc: z.string().optional(),
+  brandVoice: z.array(z.string()).min(1, "Select at least one brand voice"),
+  keywords: z.string().min(1, "Please enter at least one keyword or hashtag"),
+  bio: z.string().optional(),
+  interests: z.array(z.string()).optional(),
+  preferences: z.object({
+    emailNotifications: z.boolean(),
+    contentReminders: z.boolean(),
+    analyticsReports: z.boolean(),
+  }),
+});
+
+type SetupFormData = z.infer<typeof setupSchema>;
 
 export default function Setup() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(1);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    displayName: "",
-    company: "",
-    role: "",
-    industry: "",
-    niche: "",
-    audience: [] as string[],
-    audienceDesc: "",
-    brandVoice: [] as string[],
-    keywords: "",
-    bio: "",
-    interests: [] as string[],
-    preferences: {
-      emailNotifications: true,
-      contentReminders: true,
-      analyticsReports: true,
+
+  const {
+    control,
+    handleSubmit,
+    trigger,
+    setValue,
+    getValues,
+    formState: { errors, isSubmitting: formSubmitting },
+  } = useForm<SetupFormData>({
+    resolver: zodResolver(setupSchema),
+    defaultValues: {
+      displayName: "",
+      company: "",
+      role: "",
+      industry: "",
+      niche: "",
+      audience: [],
+      audienceDesc: "",
+      brandVoice: [],
+      keywords: "",
+      bio: "",
+      interests: [],
+      preferences: {
+        emailNotifications: true,
+        contentReminders: true,
+        analyticsReports: true,
+      },
     },
+    mode: "onTouched",
   });
 
   // Add all 6 steps for the wizard
@@ -43,23 +79,45 @@ export default function Setup() {
         <div className="text-lg font-semibold mb-2">Let's get started</div>
       </div>
       <div className="space-y-4">
-        <Input
-          label="Your Name"
-          value={formData.displayName}
-          onValueChange={(val) => updateFormData("displayName", val)}
-          className="w-full"
+        <Controller
+          name="displayName"
+          control={control}
+          render={({ field }) => (
+            <Input
+              label="Your Name"
+              {...field}
+              errorMessage={errors.displayName?.message}
+              className={`w-full ${
+                errors.displayName ? "border-red-500 ring-2 ring-red-500" : ""
+              }`}
+              isInvalid={!!errors.displayName}
+              isRequired
+            />
+          )}
         />
-        <Input
-          label="Company (optional)"
-          value={formData.company || ""}
-          onValueChange={(val) => updateFormData("company", val)}
-          className="w-full"
+        <Controller
+          name="company"
+          control={control}
+          render={({ field }) => (
+            <Input
+              label="Company (optional)"
+              {...field}
+              errorMessage={errors.company?.message}
+              className="w-full"
+            />
+          )}
         />
-        <Input
-          label="Role (optional)"
-          value={formData.role || ""}
-          onValueChange={(val) => updateFormData("role", val)}
-          className="w-full"
+        <Controller
+          name="role"
+          control={control}
+          render={({ field }) => (
+            <Input
+              label="Role (optional)"
+              {...field}
+              errorMessage={errors.role?.message}
+              className="w-full"
+            />
+          )}
         />
       </div>
     </>,
@@ -69,33 +127,52 @@ export default function Setup() {
         <div className="text-lg font-semibold mb-2">
           What industry are you in?
         </div>
+        <div className="text-[var(--text-light)] text-sm mb-4">
+          Please select your industry to proceed.
+        </div>
       </div>
       <div className="space-y-4">
-        <Select
-          label="Select your industry"
-          selectedKeys={formData.industry ? [formData.industry] : []}
-          onSelectionChange={(keys) =>
-            updateFormData("industry", Array.from(keys)[0] as string)
-          }
-          className="w-full"
-          placeholder="Select your industry"
-        >
-          {[
-            { key: "Marketing", label: "Marketing" },
-            { key: "Tech", label: "Tech" },
-            { key: "Education", label: "Education" },
-            { key: "Finance", label: "Finance" },
-            { key: "Healthcare", label: "Healthcare" },
-            { key: "Other", label: "Other" },
-          ].map((industry) => (
-            <SelectItem key={industry.key}>{industry.label}</SelectItem>
-          ))}
-        </Select>
-        <Input
-          label="What's your niche or area of expertise?"
-          value={formData.niche || ""}
-          onValueChange={(val) => updateFormData("niche", val)}
-          className="w-full"
+        <Controller
+          name="industry"
+          control={control}
+          render={({ field }) => (
+            <Select
+              label="Select your industry"
+              selectedKeys={field.value ? [field.value] : []}
+              onSelectionChange={(keys) =>
+                field.onChange(Array.from(keys)[0] as string)
+              }
+              className={`w-full ${
+                errors.industry ? "border-red-500 ring-2 ring-red-500" : ""
+              }`}
+              placeholder="Select your industry"
+              errorMessage={errors.industry?.message}
+              isInvalid={!!errors.industry}
+            >
+              {[
+                { key: "Marketing", label: "Marketing" },
+                { key: "Tech", label: "Tech" },
+                { key: "Education", label: "Education" },
+                { key: "Finance", label: "Finance" },
+                { key: "Healthcare", label: "Healthcare" },
+                { key: "Other", label: "Other" },
+              ].map((industry) => (
+                <SelectItem key={industry.key}>{industry.label}</SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+        <Controller
+          name="niche"
+          control={control}
+          render={({ field }) => (
+            <Input
+              label="What's your niche or area of expertise?"
+              {...field}
+              errorMessage={errors.niche?.message}
+              className="w-full"
+            />
+          )}
         />
       </div>
     </>,
@@ -119,27 +196,41 @@ export default function Setup() {
           "Tech Enthusiasts",
           "Creatives",
         ].map((aud) => (
-          <Checkbox
+          <Controller
             key={aud}
-            isSelected={formData.audience?.includes(aud)}
-            onValueChange={(checked) => {
-              setFormData((prev) => {
-                const arr = prev.audience ? [...prev.audience] : [];
-                if (checked) arr.push(aud);
-                else arr.splice(arr.indexOf(aud), 1);
-                return { ...prev, audience: arr };
-              });
-            }}
-          >
-            {aud}
-          </Checkbox>
+            name="audience"
+            control={control}
+            render={({ field }) => (
+              <Checkbox
+                isSelected={field.value?.includes(aud)}
+                onValueChange={(checked) => {
+                  const arr = field.value ? [...field.value] : [];
+                  if (checked) arr.push(aud);
+                  else arr.splice(arr.indexOf(aud), 1);
+                  field.onChange(arr);
+                }}
+                color={errors.audience ? "danger" : "primary"}
+              >
+                {aud}
+              </Checkbox>
+            )}
+          />
         ))}
       </div>
-      <Input
-        label="Describe your ideal audience"
-        value={formData.audienceDesc || ""}
-        onValueChange={(val) => updateFormData("audienceDesc", val)}
-        className="w-full"
+      {errors.audience && (
+        <p className="text-red-500 text-sm">{errors.audience.message}</p>
+      )}
+      <Controller
+        name="audienceDesc"
+        control={control}
+        render={({ field }) => (
+          <Input
+            label="Describe your ideal audience"
+            {...field}
+            errorMessage={errors.audienceDesc?.message}
+            className="w-full"
+          />
+        )}
       />
     </>,
     // Step 4: Brand Voice
@@ -163,23 +254,30 @@ export default function Setup() {
           "Friendly",
           "Bold",
         ].map((tone) => (
-          <Button
+          <Controller
             key={tone}
-            variant={formData.brandVoice?.includes(tone) ? "solid" : "flat"}
-            color="primary"
-            onClick={() => {
-              setFormData((prev) => {
-                const arr = prev.brandVoice ? [...prev.brandVoice] : [];
-                if (arr.includes(tone)) arr.splice(arr.indexOf(tone), 1);
-                else arr.push(tone);
-                return { ...prev, brandVoice: arr };
-              });
-            }}
-          >
-            {tone}
-          </Button>
+            name="brandVoice"
+            control={control}
+            render={({ field }) => (
+              <Button
+                variant={field.value?.includes(tone) ? "solid" : "flat"}
+                color={errors.brandVoice ? "danger" : "primary"}
+                onClick={() => {
+                  const arr = field.value ? [...field.value] : [];
+                  if (arr.includes(tone)) arr.splice(arr.indexOf(tone), 1);
+                  else arr.push(tone);
+                  field.onChange(arr);
+                }}
+              >
+                {tone}
+              </Button>
+            )}
+          />
         ))}
       </div>
+      {errors.brandVoice && (
+        <p className="text-red-500 text-sm">{errors.brandVoice.message}</p>
+      )}
     </>,
     // Step 5: Keywords
     <>
@@ -191,11 +289,21 @@ export default function Setup() {
           and audience.
         </div>
       </div>
-      <Input
-        label="Enter keywords and hashtags"
-        value={formData.keywords || ""}
-        onValueChange={(val) => updateFormData("keywords", val)}
-        className="w-full"
+      <Controller
+        name="keywords"
+        control={control}
+        render={({ field }) => (
+          <Input
+            label="Enter keywords and hashtags"
+            {...field}
+            errorMessage={errors.keywords?.message}
+            className={`w-full ${
+              errors.keywords ? "border-red-500 ring-2 ring-red-500" : ""
+            }`}
+            isInvalid={!!errors.keywords}
+            isRequired
+          />
+        )}
       />
     </>,
     // Step 6: Review
@@ -208,7 +316,7 @@ export default function Setup() {
       <div className="space-y-2 mb-6">
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Name</span>
-          <span>{formData.displayName}</span>
+          <span>{getValues("displayName")}</span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Email</span>
@@ -216,27 +324,29 @@ export default function Setup() {
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Industry</span>
-          <span>{formData.industry}</span>
+          <span>{getValues("industry")}</span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Company</span>
-          <span>{formData.company}</span>
+          <span>{getValues("company")}</span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Role</span>
-          <span>{formData.role}</span>
+          <span>{getValues("role")}</span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Target Audience</span>
-          <span>{formData.audience?.join(", ") || formData.audienceDesc}</span>
+          <span>
+            {getValues("audience")?.join(", ") || getValues("audienceDesc")}
+          </span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Brand Voice</span>
-          <span>{formData.brandVoice?.join(", ")}</span>
+          <span>{getValues("brandVoice")?.join(", ")}</span>
         </div>
         <div className="flex justify-between border-b py-2">
           <span className="font-medium">Keywords</span>
-          <span>{formData.keywords}</span>
+          <span>{getValues("keywords")}</span>
         </div>
       </div>
     </>,
@@ -250,100 +360,13 @@ export default function Setup() {
 
   // Pre-fill display name with session user name if available
   useEffect(() => {
-    if (session?.user?.name && !formData.displayName) {
-      setFormData((prev) => ({
-        ...prev,
-        displayName: session.user.name || "",
-      }));
+    if (session?.user?.name && !getValues("displayName")) {
+      setValue("displayName", session.user.name || "");
     }
-  }, [session, formData.displayName]);
+  }, [session, getValues, setValue]);
 
-  const updateFormData = (field: string, value: any) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handleInterestToggle = (interest: string) => {
-    setFormData((prev) => {
-      const interests = [...prev.interests];
-      if (interests.includes(interest)) {
-        return {
-          ...prev,
-          interests: interests.filter((i) => i !== interest),
-        };
-      } else {
-        return {
-          ...prev,
-          interests: [...interests, interest],
-        };
-      }
-    });
-  };
-
-  const handlePreferenceChange = (preference: string, checked: boolean) => {
-    setFormData((prev) => ({
-      ...prev,
-      preferences: {
-        ...prev.preferences,
-        [preference]: checked,
-      },
-    }));
-  };
-
-  const handleNext = async () => {
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      // Submit the form and redirect to dashboard
-      try {
-        setIsSubmitting(true);
-        setError("");
-
-        // Only proceed if we have a session with a user
-        if (!session?.user?.email) {
-          setError("Authentication error. Please try logging in again.");
-          return;
-        }
-
-        // Submit user preferences to the API
-        const response = await fetch("/api/auth/complete-setup", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            displayName: formData.displayName,
-            bio: formData.bio,
-            interests: formData.interests,
-            preferences: formData.preferences,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.message || "Failed to complete setup");
-        }
-
-        // Redirect to dashboard on success
-        router.push("/dashboard");
-      } catch (error) {
-        console.error("Setup error:", error);
-        setError(
-          error instanceof Error
-            ? error.message
-            : "An error occurred while completing setup"
-        );
-      } finally {
-        setIsSubmitting(false);
-      }
-    }
-  };
-
-  const finishSetup = async () => {
+  const finishSetup = async (data: SetupFormData) => {
     try {
-      setIsSubmitting(true);
       setError("");
 
       // Only proceed if we have a session with a user
@@ -359,7 +382,7 @@ export default function Setup() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          ...formData,
+          ...data,
           email: session.user.email,
         }),
       });
@@ -378,8 +401,6 @@ export default function Setup() {
           ? error.message
           : "An error occurred while completing setup"
       );
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
@@ -391,10 +412,39 @@ export default function Setup() {
 
   // Navigation logic
   const handleNextStep = async () => {
-    if (currentStep < totalSteps) {
-      setCurrentStep(currentStep + 1);
+    // Define required fields for each step
+    const requiredFieldsByStep = {
+      1: ["displayName"],
+      2: ["industry"],
+      3: ["audience"],
+      4: ["brandVoice"],
+      5: ["keywords"],
+      6: [], // Review step has no additional required fields
+    };
+
+    // Get the required fields for the current step
+    const fieldsToValidate =
+      requiredFieldsByStep[currentStep as keyof typeof requiredFieldsByStep] ||
+      [];
+
+    // Validate only the fields for the current step
+    const isValid = await trigger(fieldsToValidate as (keyof SetupFormData)[]);
+
+    if (isValid) {
+      if (currentStep < totalSteps) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        handleSubmit(finishSetup)();
+      }
     } else {
-      await finishSetup();
+      // Set focus to the first invalid field (optional enhancement)
+      const firstErrorField = fieldsToValidate.find(
+        (field) => errors[field as keyof typeof errors]
+      );
+
+      // Show a temporary message to alert the user about required fields
+      setError("Please fill in all required fields to continue");
+      setTimeout(() => setError(""), 3000);
     }
   };
 
@@ -451,23 +501,23 @@ export default function Setup() {
               <Button
                 variant="flat"
                 onClick={handlePrevious}
-                isDisabled={currentStep === 1 || isSubmitting}
+                isDisabled={currentStep === 1 || formSubmitting}
               >
                 Back
               </Button>
               <Button
                 color="primary"
                 onClick={handleNextStep}
-                isLoading={isSubmitting}
+                isLoading={formSubmitting}
               >
                 {currentStep === totalSteps ? "Complete Setup" : "Next"}
               </Button>
             </div>
-            {error && (
-              <div className="mt-4 p-3 text-sm bg-red-100 border border-red-200 rounded-lg text-red-800">
+            {/* {error && (
+              <div className="mt-4 p-3 text-sm bg-red-100 border border-red-200 rounded-lg text-red-800 animate-pulse">
                 {error}
               </div>
-            )}
+            )} */}
           </div>
         </div>
       </main>
