@@ -1,0 +1,63 @@
+/* Force input text colors with !important flags */
+input,
+textarea,
+select {
+  color: black !important;
+  -webkit-text-fill-color: black !important;
+  caret-color: black !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #6c757d !important;
+  opacity: 0.7 !important;
+}
+
+/* More specific selectors for email, text and password inputs */
+input[type="email"],
+input[type="text"],
+input[type="password"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+input[type="number"] {
+  color: black !important;
+  -webkit-text-fill-color: black !important;
+}
+
+/* Only apply white text in dark mode */
+html[data-theme="dark"] input,
+html[data-theme="dark"] textarea,
+html[data-theme="dark"] select {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+  caret-color: white !important;
+}
+
+html[data-theme="dark"] input[type="email"],
+html[data-theme="dark"] input[type="text"],
+html[data-theme="dark"] input[type="password"],
+html[data-theme="dark"] input[type="search"],
+html[data-theme="dark"] input[type="tel"],
+html[data-theme="dark"] input[type="url"],
+html[data-theme="dark"] input[type="number"] {
+  color: white !important;
+  -webkit-text-fill-color: white !important;
+}
+
+/* Fix for Safari and iOS */
+@media not all and (min-resolution: 0.001dpcm) {
+  @supports (-webkit-appearance: none) {
+    input[type="email"],
+    input[type="text"],
+    input[type="password"] {
+      -webkit-text-fill-color: black !important;
+    }
+
+    html[data-theme="dark"] input[type="email"],
+    html[data-theme="dark"] input[type="text"],
+    html[data-theme="dark"] input[type="password"] {
+      -webkit-text-fill-color: white !important;
+    }
+  }
+}

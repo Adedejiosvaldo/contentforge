@@ -112,7 +112,7 @@ export default function ForgotPassword() {
                         error
                           ? "border-red-500/50 input-error"
                           : "border-[var(--border-color)]"
-                      } rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)] transition-colors placeholder-[var(--text-light)]/50`}
+                      } rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)] transition-colors placeholder-[var(--text-light)]/50 text-[var(--text-color)]`}
                       placeholder="name@example.com"
                       value={email}
                       onChange={(e) => {

@@ -4,6 +4,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { z } from "zod";
+import { Input, Checkbox } from "@heroui/react";
+import PasswordInput from "../components/PasswordInput";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@heroui/react";
+import { MailIcon, LockIcon, UserIcon } from "../components/icons/FormIcons";
 
 // Define validation schema
 const signupSchema = z.object({
@@ -24,54 +30,28 @@ const signupSchema = z.object({
 type SignupFormData = z.infer<typeof signupSchema>;
 
 export default function SignUp() {
-  const [formData, setFormData] = useState<SignupFormData>({
-    name: "",
-    email: "",
-    password: "",
-    agreeTerms: false,
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError,
+    clearErrors,
+    watch,
+  } = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    mode: "onBlur",
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+      agreeTerms: false,
+    },
   });
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [generalError, setGeneralError] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, checked, type } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value,
-    });
-
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
-    }
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setGeneralError("");
-
-    try {
-      // Validate form data
-      signupSchema.parse(formData);
-
-      // If successful, proceed with form submission
-      console.log("Form submitted:", formData);
-      // Here you would typically call your registration API
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        // Convert Zod errors to a more friendly format
-        const fieldErrors: Record<string, string> = {};
-        error.errors.forEach((err) => {
-          const field = err.path[0] as string;
-          fieldErrors[field] = err.message;
-        });
-        setErrors(fieldErrors);
-      } else {
-        setGeneralError("An unexpected error occurred. Please try again.");
-      }
-    }
+  const onSubmit = async (data: SignupFormData) => {
+    // Here you would typically call your registration API
+    // For demo, just log
+    console.log("Form submitted:", data);
   };
 
   return (
@@ -90,32 +70,33 @@ export default function SignUp() {
           <span className="font-semibold">ContentCraft</span>
         </Link>
 
-        <Link href="/login">
-          <button className="px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
-            Sign In
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="ml-1"
-            >
-              <line x1="5" y1="12" x2="19" y2="12"></line>
-              <polyline points="12 5 19 12 12 19"></polyline>
-            </svg>
-          </button>
-        </Link>
+        <div className="flex items-center gap-3">
+          {/* <ThemeToggle /> */}
+          <Link href="/login">
+            <button className="px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
+              Sign In
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="ml-1"
+              >
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </button>
+          </Link>
+        </div>
       </header>
 
       <main className="flex-1 flex flex-col items-center justify-center py-12 px-4">
         <div className="w-full max-w-lg">
-          {" "}
-          {/* Changed from max-w-md to max-w-lg for wider form */}
           <div className="glass backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-xl border border-[var(--border-color)] p-8 md:p-10 relative overflow-hidden">
             {/* Decorative elements */}
             <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[var(--primary-color)]/30 to-transparent"></div>
@@ -131,211 +112,51 @@ export default function SignUp() {
               </p>
             </div>
 
-            {generalError && (
-              <div className="mb-6 p-4 bg-red-100/20 border border-red-300/30 text-red-500 rounded-xl text-center">
-                {generalError}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-[var(--text-color)] mb-1.5"
-                >
-                  Full Name
-                </label>
-                <div className="relative">
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    className={`w-full px-4 py-3.5 bg-[var(--background)]/30 border ${
-                      errors.name
-                        ? "border-red-500/50 input-error"
-                        : "border-[var(--border-color)]"
-                    } rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)] transition-colors placeholder-[var(--text-light)]/50`}
-                    placeholder="John Doe"
-                    value={formData.name}
-                    onChange={handleChange}
-                  />
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-[var(--text-light)]/70 absolute left-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    {/* Visual spacer for text alignment */}
-                    <span className="opacity-0">Name</span>
-                  </div>
-                </div>
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-[var(--text-color)] mb-1.5"
-                >
-                  Email address
-                </label>
-                <div className="relative">
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    required
-                    className={`w-full px-4 py-3.5 bg-[var(--background)]/30 border ${
-                      errors.email
-                        ? "border-red-500/50 input-error"
-                        : "border-[var(--border-color)]"
-                    } rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)] transition-colors placeholder-[var(--text-light)]/50`}
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-[var(--text-light)]/70 absolute left-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    {/* Visual spacer for text alignment */}
-                    <span className="opacity-0">Email</span>
-                  </div>
-                </div>
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                )}
-              </div>
-
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium text-[var(--text-color)] mb-1.5"
-                >
-                  Password
-                </label>
-                <div className="relative">
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="new-password"
-                    required
-                    className={`w-full px-4 py-3.5 bg-[var(--background)]/30 border ${
-                      errors.password
-                        ? "border-red-500/50 input-error"
-                        : "border-[var(--border-color)]"
-                    } rounded-xl focus:ring-2 focus:ring-[var(--primary-color)]/50 focus:border-[var(--primary-color)] transition-colors placeholder-[var(--text-light)]/50`}
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
-                  <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-[var(--text-light)]/70 absolute left-0"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
-                  <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
-                    {/* Visual spacer for text alignment */}
-                    <span className="opacity-0">Password</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[var(--text-light)]/70 hover:text-[var(--text-light)] transition-colors"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                      </svg>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="18"
-                        height="18"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                        <circle cx="12" cy="12" r="3"></circle>
-                      </svg>
-                    )}
-                  </button>
-                </div>
-                {errors.password ? (
-                  <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-                ) : (
-                  <p className="text-xs text-[var(--text-light)] mt-1.5">
-                    Must be at least 8 characters with 1 special character
-                  </p>
-                )}
-              </div>
-
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <Input
+                {...register("name")}
+                isClearable
+                className="w-full"
+                label="Full Name"
+                placeholder="Enter your full name"
+                type="text"
+                variant="bordered"
+                isInvalid={!!errors.name}
+                errorMessage={errors.name?.message}
+                onValueChange={() => clearErrors("name")}
+              />
+              <Input
+                {...register("email")}
+                isClearable
+                className="w-full"
+                label="Email"
+                placeholder="Enter your email"
+                type="email"
+                variant="bordered"
+                isInvalid={!!errors.email}
+                errorMessage={errors.email?.message}
+                onValueChange={() => clearErrors("email")}
+              />
+              <Input
+                {...register("password")}
+                isClearable
+                className="w-full"
+                label="Password"
+                placeholder="Enter your password"
+                type="password"
+                variant="bordered"
+                isInvalid={!!errors.password}
+                errorMessage={errors.password?.message}
+                onValueChange={() => clearErrors("password")}
+              />
               <div className="flex items-center">
                 <input
                   id="agreeTerms"
-                  name="agreeTerms"
+                  {...register("agreeTerms")}
                   type="checkbox"
-                  required
                   className={`w-4 h-4 text-[var(--primary-color)] bg-[var(--background)]/20 border-[var(--border-color)] rounded focus:ring-[var(--primary-color)] ${
                     errors.agreeTerms ? "border-red-500" : ""
                   }`}
-                  checked={formData.agreeTerms}
-                  onChange={handleChange}
                 />
                 <label
                   htmlFor="agreeTerms"
@@ -362,31 +183,18 @@ export default function SignUp() {
                 </label>
               </div>
               {errors.agreeTerms && (
-                <p className="mt-1 text-sm text-red-500">{errors.agreeTerms}</p>
+                <p className="mt-1 text-sm text-red-500">
+                  {errors.agreeTerms.message}
+                </p>
               )}
-
-              <button
+              <Button
                 type="submit"
-                className="w-full py-3.5 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-hover)] text-white font-medium rounded-xl hover:shadow-lg hover:shadow-[var(--primary-color)]/20 transition-all duration-300 flex items-center justify-center gap-2 relative overflow-hidden group mt-4"
+                color="primary"
+                className="w-full p-6 mt-4"
+                isLoading={isSubmitting}
               >
-                <span className="relative z-10">Sign Up</span>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="group-hover:translate-x-1 transition-transform relative z-10"
-                >
-                  <line x1="5" y1="12" x2="19" y2="12"></line>
-                  <polyline points="12 5 19 12 12 19"></polyline>
-                </svg>
-                <div className="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
-              </button>
+                Sign Up
+              </Button>
             </form>
 
             <div className="relative flex items-center my-8">
