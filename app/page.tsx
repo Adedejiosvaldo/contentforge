@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import DashboardMockup from "./components/DashboardMockup";
 
 export default function Home() {
   return (
@@ -84,20 +85,37 @@ export default function Home() {
       {/* Hero Section with PlantImage */}
       <main className="flex-1 flex flex-col items-center">
         <section className="w-full py-24 md:py-32 px-4 relative overflow-hidden">
-          {/* Subtle circular gradients for background effect */}
-          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-[var(--accent-light)]/30 rounded-full filter blur-[120px] -z-10"></div>
-          <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-[var(--accent-color)]/30 rounded-full filter blur-[100px] -z-10"></div>
-          <div className="absolute bottom-1/3 left-1/4 w-[300px] h-[300px] bg-[var(--accent-color)]/20 rounded-full filter blur-[80px] -z-10 animate-float"></div>
+          {/* Enhanced gradient background effect */}
+          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--accent-light)]/40 via-[var(--accent-color)]/30 to-[var(--accent-light)]/40"></div>
+          
+          {/* Animated gradient blobs */}
+          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-[var(--accent-light)]/40 rounded-full filter blur-[120px] -z-10 animate-pulse-slow"></div>
+          <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-[var(--accent-color)]/40 rounded-full filter blur-[100px] -z-10 animate-float"></div>
+          <div className="absolute bottom-1/3 left-1/4 w-[300px] h-[300px] bg-[var(--primary-color)]/30 rounded-full filter blur-[80px] -z-10 animate-float-delay"></div>
+          
+          {/* Grid pattern overlay */}
+          <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] -z-10"></div>
 
           <div className="container mx-auto max-w-6xl relative z-10">
             <div className="flex flex-col md:flex-row items-center justify-between gap-12">
               {/* Hero text content */}
               <div className="md:w-1/2 text-center md:text-left">
-                <div className="glass hero-glass-container backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-lg border border-[var(--border-color)] p-10 md:p-12">
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight text-[var(--text-color)]">
-                    Create Engaging Content
+                <div className="glass hero-glass-container backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-lg border border-[var(--border-color)] p-10 md:p-12 relative overflow-hidden">
+                  {/* Decorative elements */}
+                  <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[var(--primary-color)]/30 to-transparent"></div>
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-color)]/10 rounded-full filter blur-[80px] -z-10"></div>
+                  
+                  <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight text-[var(--text-color)] relative">
+                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-color)] via-[var(--primary-color)] to-[var(--text-color)]">
+                      Create Engaging Content
+                    </span>
                     <br />
-                    Across All Platforms
+                    <span className="relative z-10">
+                      Across All Platforms
+                      <svg className="absolute -bottom-2 left-0 w-full h-2 text-[var(--primary-color)]/20" viewBox="0 0 300 12" preserveAspectRatio="none">
+                        <path d="M0,0 C50,12 100,12 150,6 C200,0 250,0 300,12 L300,12 L0,12 Z" fill="currentColor"></path>
+                      </svg>
+                    </span>
                   </h1>
                   <p className="text-lg md:text-xl text-[var(--text-light)] mb-12 max-w-xl">
                     Effortlessly craft compelling posts for Instagram, Twitter, LinkedIn,
@@ -124,9 +142,11 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Plant illustration */}
+              {/* Dashboard UI mockup */}
               <div className="md:w-1/2 flex justify-center">
-                <div className="glass hero-glass-container backdrop-blur-md bg-[var(--background)]/5 rounded-full p-6 border border-[var(--border-color)]"></div>
+                <div className="w-full max-w-md">
+                  <DashboardMockup />
+                </div>
               </div>
             </div>
           </div>
