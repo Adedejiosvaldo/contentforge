@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
       userInterestsDb?.map((i: UserInterest) => i.interest).join(", ") ||
       "general topics";
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GOOGLE_GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
         { error: "API key for Google Generative AI not configured" },
@@ -72,7 +72,9 @@ export async function POST(request: NextRequest) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.0-flash",
+    });
 
     const generatedPosts: Record<string, string> = {};
 

@@ -333,67 +333,67 @@ export default function CreateContent() {
                     </p>
                   </div>
                 </div>
-              ) : currentPrompt ? (
+              ) : Object.keys(generatedContent).length > 0 ? ( // Check if generatedContent has data
                 <div className="space-y-6">
-                  {currentPlatforms.twitter && (
-                    <div className="border border-[var(--border-color)] rounded-lg p-4">
-                      <div className="flex items-center mb-3">
-                        <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-5 w-5"
-                            fill="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                          </svg>
-                        </div>
-                        <h3 className="font-medium">Twitter Post</h3>
-                        <div className="flex ml-auto">
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
+                  {currentPlatforms.twitter &&
+                    generatedContent.twitter && ( // Also check if content for specific platform exists
+                      <div className="border border-[var(--border-color)] rounded-lg p-4">
+                        <div className="flex items-center mb-3">
+                          <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-5 w-5"
-                              fill="none"
+                              fill="currentColor"
                               viewBox="0 0 24 24"
-                              stroke="currentColor"
                             >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                              />
+                              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
                             </svg>
-                          </button>
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
-                          </button>
+                          </div>
+                          <h3 className="font-medium">Twitter Post</h3>
+                          <div className="flex ml-auto">
+                            <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={1.5}
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+                                />
+                              </svg>
+                            </button>
+                            <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-5 w-5"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={1.5}
+                                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                                />
+                              </svg>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="text-sm">
+                          <p className="text-[var(--text-color)]">
+                            {generatedContent.twitter}
+                          </p>
                         </div>
                       </div>
-                      <div className="text-sm">
-                        <p className="text-[var(--text-color)]">
-                          {generatedContent.twitter ||
-                            "Click 'Generate Content' to see results."}
-                        </p>
-                      </div>
-                    </div>
-                  )}
+                    )}
 
-                  {currentPlatforms.facebook && (
+                  {currentPlatforms.facebook && generatedContent.facebook && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#4267B2]/20 text-[#4267B2] flex items-center justify-center mr-2">
@@ -444,14 +444,13 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.facebook ||
-                            "Click 'Generate Content' to see results."}
+                          {generatedContent.facebook}
                         </p>
                       </div>
                     </div>
                   )}
 
-                  {currentPlatforms.instagram && (
+                  {currentPlatforms.instagram && generatedContent.instagram && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FCAF45] via-[#E1306C] to-[#5851DB]/20 text-[#E1306C] flex items-center justify-center mr-2">
@@ -511,14 +510,13 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.instagram ||
-                            "Click 'Generate Content' to see results."}
+                          {generatedContent.instagram}
                         </p>
                       </div>
                     </div>
                   )}
 
-                  {currentPlatforms.linkedin && (
+                  {currentPlatforms.linkedin && generatedContent.linkedin && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center mr-2">
@@ -571,8 +569,7 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.linkedin ||
-                            "Click 'Generate Content' to see results."}
+                          {generatedContent.linkedin}
                         </p>
                       </div>
                     </div>
@@ -604,7 +601,8 @@ export default function CreateContent() {
                 </div>
               )}
 
-              {currentPrompt && !isGenerating && (
+              {/* Regenerate and Save buttons: Show only if content exists and not generating */}
+              {!isGenerating && Object.keys(generatedContent).length > 0 && (
                 <div className="flex justify-between mt-6 pt-4 border-t border-[var(--border-color)]">
                   <Button
                     variant="ghost"
