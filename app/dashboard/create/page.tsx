@@ -11,6 +11,9 @@ export default function CreateContent() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("post");
   const [prompt, setPrompt] = useState("");
+  const [generatedContent, setGeneratedContent] = useState<
+    Record<string, string>
+  >({}); // Store generated content for each platform
   const [isGenerating, setIsGenerating] = useState(false);
   const [platforms, setPlatforms] = useState({
     twitter: true,
@@ -23,11 +26,51 @@ export default function CreateContent() {
     if (!prompt) return;
 
     setIsGenerating(true);
+    setGeneratedContent({}); // Clear previous content
 
-    // Simulating API call delay
-    setTimeout(() => {
+    const selectedPlatforms = Object.entries(platforms)
+      .filter(([_, isSelected]) => isSelected)
+      .map(([platform]) => platform);
+
+    if (selectedPlatforms.length === 0) {
+      // TODO: Show a user-facing message (e.g., toast notification)
+      console.warn("No platforms selected for content generation.");
       setIsGenerating(false);
-    }, 2000);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        // Send all selected platforms to the API
+        body: JSON.stringify({
+          prompt,
+          socialMediaPlatforms: selectedPlatforms,
+        }),
+      });
+
+      if (!response.ok) {
+        // TODO: Show a user-facing message (e.g., toast notification)
+        console.error("API Error:", await response.text());
+        // Potentially set an error state here to display to the user
+        setIsGenerating(false);
+        return;
+      }
+
+      const data = await response.json();
+
+      // The API now returns a map of generated posts
+      setGeneratedContent(data.generatedPosts || {});
+    } catch (error) {
+      // TODO: Show a user-facing message (e.g., toast notification)
+      console.error("Failed to generate content:", error);
+      // Potentially set an error state here to display to the user
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const togglePlatform = (platform: string) => {
@@ -359,7 +402,8 @@ export default function CreateContent() {
                       </svg>
                     </div>
                     <p className="mt-3 text-[var(--text-light)]">
-                      Generating content for {platformCount} platforms...
+                      Generating content for {platformCount} platform
+                      {platformCount !== 1 ? "s" : ""}...
                     </p>
                   </div>
                 </div>
@@ -416,9 +460,8 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          Just started exploring sustainable living practices
-                          and I'm amazed at how small changes can make a big
-                          difference! 🌱 #SustainableLiving #EcoFriendly
+                          {generatedContent.twitter ||
+                            "Click 'Generate Content' to see results."}
                         </p>
                       </div>
                     </div>
@@ -475,18 +518,8 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          I've been on a journey to live more sustainably and
-                          wanted to share some discoveries!
-                          <br />
-                          <br />
-                          Did you know that switching to a reusable water bottle
-                          can save hundreds of plastic bottles per year? I've
-                          been using mine for a month now and it's become second
-                          nature.
-                          <br />
-                          <br />
-                          What sustainable swaps have you made in your daily
-                          routine? Share your tips below! 🌎♻️
+                          {generatedContent.facebook ||
+                            "Click 'Generate Content' to see results."}
                         </p>
                       </div>
                     </div>
@@ -552,17 +585,8 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          Taking small steps toward a more sustainable lifestyle
-                          🌿 This week I swapped single-use plastics for these
-                          beautiful reusable alternatives!
-                          <br />
-                          <br />
-                          Tell me in the comments: what's your favorite
-                          eco-friendly product?
-                          <br />
-                          <br />
-                          #SustainableLiving #EcoConscious #GreenLiving
-                          #ZeroWasteJourney #EarthFriendly #SimpleSustainability
+                          {generatedContent.instagram ||
+                            "Click 'Generate Content' to see results."}
                         </p>
                       </div>
                     </div>
@@ -621,35 +645,8 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          I'm excited to share that I've been implementing
-                          sustainable practices both personally and
-                          professionally.
-                          <br />
-                          <br />
-                          Recent studies show that businesses with strong
-                          sustainability initiatives see up to 20% higher
-                          customer loyalty and employee engagement. This isn't
-                          just good for the planet—it's good business.
-                          <br />
-                          <br />
-                          Here are three simple sustainability initiatives any
-                          company can implement:
-                          <br />
-                          <br />
-                          1️⃣ Remote work options to reduce commuting emissions
-                          <br />
-                          2️⃣ Digital-first documentation to minimize paper waste
-                          <br />
-                          3️⃣ Energy-efficient office equipment and lighting
-                          <br />
-                          <br />
-                          What sustainability practices has your organization
-                          adopted? I'd love to hear your experiences and
-                          exchange ideas.
-                          <br />
-                          <br />
-                          #SustainableBusiness #CorporateResponsibility
-                          #GreenInitiatives
+                          {generatedContent.linkedin ||
+                            "Click 'Generate Content' to see results."}
                         </p>
                       </div>
                     </div>
