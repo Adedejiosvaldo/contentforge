@@ -15,6 +15,7 @@ export default function Dashboard() {
   const [posts, setPosts] = useState<any[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState<string | null>(null);
+  const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: "/login" });
@@ -116,7 +117,7 @@ export default function Dashboard() {
               prompt.
             </p>
             <Link href="/dashboard/create">
-              <Button color="primary" size="sm" className="mt-2">
+              <Button color="primary" size="md" className="mt-2">
                 Create Now
               </Button>
             </Link>
@@ -148,7 +149,7 @@ export default function Dashboard() {
               <Button
                 color="default"
                 variant="bordered"
-                size="sm"
+                size="md"
                 className="mt-2"
               >
                 View Templates
@@ -178,7 +179,7 @@ export default function Dashboard() {
               Track performance and engagement of your content across platforms.
             </p>
             <Link href="/dashboard/analytics">
-              <Button color="default" variant="flat" size="sm" className="mt-2">
+              <Button color="default" variant="flat" size="md" className="mt-2">
                 Check Analytics
               </Button>
             </Link>
@@ -204,11 +205,19 @@ export default function Dashboard() {
             posts.slice(0, 4).map((post) => (
               <div
                 key={post.id}
-                className="bg-[var(--background)] border border-[var(--border-color)] rounded-xl shadow-sm p-5 flex flex-col justify-between min-h-[180px]"
+                className="relative bg-[var(--background)] border border-[var(--border-color)] rounded-xl shadow-sm p-5 flex flex-col justify-between min-h-[180px]"
               >
+                {/* Overlay for copied */}
+                {copiedPostId === post.id && (
+                  <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/80 dark:bg-black/70 rounded-xl transition-opacity">
+                    <span className="text-blue-700 dark:text-white font-semibold text-base">
+                      Copied!
+                    </span>
+                  </div>
+                )}
                 <div className="flex items-center gap-2 mb-2">
                   <span
-                    className={`inline-block px-2 py-1 text-xs rounded-full font-medium bg-[var(--primary-color)]/10 text-[var(--primary-color)] capitalize`}
+                    className={`inline-block px-2 py-1 text-xs rounded-full font-medium text-[var(--text-light)] capitalize`}
                   >
                     {post.platform}
                   </span>
@@ -225,28 +234,44 @@ export default function Dashboard() {
                 </div>
                 <div className="flex items-center gap-2 mt-auto">
                   <Link href={`/dashboard/content?post=${post.id}`}>
-                    <Button color="primary" size="sm" variant="flat">
+                    <Button
+                      className="bg-[#0088FF] text-white hover:bg-[#0077CC]"
+                      color="primary"
+                      size="sm"
+                      variant="solid"
+                    >
                       View
                     </Button>
                   </Link>
                   <button
-                    className="ml-auto text-xs text-[var(--primary-color)] hover:underline"
+                    className="ml-auto text-xs text-[var(--light-color)] hover:underline"
                     onClick={() => {
                       navigator.clipboard.writeText(post.content);
+                      setCopiedPostId(post.id);
+                      setTimeout(() => setCopiedPostId(null), 1200);
                     }}
                     title="Copy post content"
                   >
-                    Copy
+                    <svg
+                      className="h-5 w-5"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      viewBox="0 0 24 24"
+                    >
+                      <rect x="9" y="9" width="13" height="13" rx="2" />
+                      <path d="M5 15V5a2 2 0 012-2h10" />
+                    </svg>
                   </button>
                 </div>
               </div>
             ))
           )}
         </div>
-        <div className="mb-8 flex justify-end">
+        <div className="mb-8 flex justify-start">
           <Link
             href="/dashboard/content"
-            className="text-[var(--primary-color)] hover:text-[var(--primary-hover)] text-sm font-medium flex items-center"
+            className="text-white hover:text-gray-300 text-sm font-medium flex items-center"
           >
             View All Posts
             <svg
