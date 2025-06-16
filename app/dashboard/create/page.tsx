@@ -15,10 +15,10 @@ const contentSchema = z.object({
   prompt: z.string().min(1, { message: "Prompt cannot be empty." }),
   platforms: z
     .object({
-      twitter: z.boolean(),
-      facebook: z.boolean(),
-      instagram: z.boolean(),
-      linkedin: z.boolean(),
+      Twitter: z.boolean(),
+      Facebook: z.boolean(),
+      Instagram: z.boolean(),
+      LinkedIn: z.boolean(),
     })
     .refine((data) => Object.values(data).some((val) => val === true), {
       message: "Please select at least one platform.",
@@ -50,10 +50,10 @@ export default function CreateContent() {
     defaultValues: {
       prompt: "",
       platforms: {
-        twitter: true,
-        facebook: false,
-        instagram: false,
-        linkedin: true,
+        Twitter: true,
+        Facebook: false,
+        Instagram: false,
+        LinkedIn: true,
       },
     },
     mode: "onChange", // Validate on change for immediate feedback
@@ -379,7 +379,7 @@ export default function CreateContent() {
                 </div>
               ) : Object.keys(generatedContent).length > 0 ? ( // Check if generatedContent has data
                 <div className="space-y-6">
-                  {currentPlatforms.twitter && generatedContent.twitter && (
+                  {currentPlatforms.Twitter && generatedContent.Twitter && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
@@ -446,7 +446,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {currentPlatforms.facebook && generatedContent.facebook && (
+                  {currentPlatforms.Facebook && generatedContent.Facebook && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#4267B2]/20 text-[#4267B2] flex items-center justify-center mr-2">
@@ -513,7 +513,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {currentPlatforms.instagram && generatedContent.instagram && (
+                  {currentPlatforms.Instagram && generatedContent.Instagram && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FCAF45] via-[#E1306C] to-[#5851DB]/20 text-[#E1306C] flex items-center justify-center mr-2">
@@ -589,7 +589,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {currentPlatforms.linkedin && generatedContent.linkedin && (
+                  {currentPlatforms.LinkedIn && generatedContent.LinkedIn && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center mr-2">

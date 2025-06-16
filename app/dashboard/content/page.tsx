@@ -6,73 +6,6 @@ import Link from "next/link";
 import { Button } from "@heroui/react";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
-// Sample post data
-const SAMPLE_POSTS = [
-  {
-    id: "post1",
-    content:
-      "Just launched our new sustainable product line! Check out how we're reducing plastic waste while delivering the same great quality. #SustainableLiving #EcoFriendly",
-    platform: "Twitter",
-    status: "Published",
-    date: "2025-05-22",
-    engagement: 142,
-  },
-  {
-    id: "post2",
-    content:
-      "The journey to sustainability isn't just about products, it's about rethinking our entire approach to business. Here's how we're transforming our supply chain to minimize environmental impact...",
-    platform: "LinkedIn",
-    status: "Published",
-    date: "2025-05-20",
-    engagement: 67,
-  },
-  {
-    id: "post3",
-    content:
-      "Excited to announce our upcoming webinar on sustainable business practices! Join us next Tuesday to learn practical tips for reducing your company's carbon footprint.",
-    platform: "Facebook",
-    status: "Scheduled",
-    date: "2025-05-28",
-    engagement: 0,
-  },
-  {
-    id: "post4",
-    content:
-      "Behind the scenes at our recycling facility! ♻️ Every month, we process over 5,000 pounds of materials that would otherwise end up in landfills. #SustainableBusiness #RecyclingMatters",
-    platform: "Instagram",
-    status: "Draft",
-    date: "2025-05-24",
-    engagement: 0,
-  },
-  {
-    id: "post5",
-    content:
-      "Our team is exploring innovative packaging alternatives that are both biodegradable and cost-effective. Here's what we've learned so far about the balance between sustainability and practicality.",
-    platform: "Blog",
-    status: "Draft",
-    date: "2025-05-23",
-    engagement: 0,
-  },
-  {
-    id: "post6",
-    content:
-      "Summer sale! Enjoy 20% off all our eco-friendly products this weekend only. Use code ECO20 at checkout. #SummerSale #EcoFriendly",
-    platform: "Twitter",
-    status: "Published",
-    date: "2025-05-15",
-    engagement: 89,
-  },
-  {
-    id: "post7",
-    content:
-      "Meet the team behind our sustainable innovation lab! These brilliant minds are developing the next generation of eco-friendly solutions.",
-    platform: "Instagram",
-    status: "Published",
-    date: "2025-05-10",
-    engagement: 215,
-  },
-];
-
 export default function ContentManagement() {
   const { data: session } = useSession();
   const [searchTerm, setSearchTerm] = useState("");
@@ -93,6 +26,7 @@ export default function ContentManagement() {
         const res = await fetch("/api/posts");
         if (!res.ok) throw new Error("Failed to fetch posts");
         const data = await res.json();
+        console.log("Fetched posts:", data.posts);
         setPosts(data.posts || []);
       } catch (err: any) {
         setError(err.message || "Failed to fetch posts");
@@ -223,7 +157,7 @@ export default function ContentManagement() {
             </svg>
           </div>
         );
-      case "LinkedIn":
+      case "Linkedin":
         return (
           <div className="w-6 h-6 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center">
             <svg

@@ -185,113 +185,85 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Recent Posts */}
+        {/* Recent Posts - Card Layout */}
         <h2 className="text-xl font-semibold mb-4 mt-8">Recent Posts</h2>
-        <div className="overflow-hidden border border-[var(--border-color)] rounded-xl shadow-sm mb-8">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-[var(--border-color)]">
-              <thead className="bg-[var(--background)]/50">
-                <tr>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-light)] uppercase tracking-wider"
-                  >
-                    Post Content
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-light)] uppercase tracking-wider"
-                  >
-                    Platform
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-light)] uppercase tracking-wider"
-                  >
-                    Date
-                  </th>
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-[var(--text-light)] uppercase tracking-wider"
-                  >
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-[var(--background)] divide-y divide-[var(--border-color)]">
-                {postsLoading ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="px-6 py-4 text-center text-[var(--text-light)]"
-                    >
-                      Loading posts...
-                    </td>
-                  </tr>
-                ) : postsError ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="px-6 py-4 text-center text-red-500"
-                    >
-                      {postsError}
-                    </td>
-                  </tr>
-                ) : posts.length === 0 ? (
-                  <tr>
-                    <td
-                      colSpan={4}
-                      className="px-6 py-4 text-center text-[var(--text-light)]"
-                    >
-                      No posts found.
-                    </td>
-                  </tr>
-                ) : (
-                  posts.slice(0, 4).map((post) => (
-                    <tr key={post.id}>
-                      <td className="px-6 py-4 whitespace-pre-line text-sm text-[var(--text-color)]">
-                        {post.content}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                        {post.platform.charAt(0).toUpperCase() +
-                          post.platform.slice(1)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm">
-                        <button className="text-[var(--primary-color)] hover:text-[var(--primary-hover)]">
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-          <div className="px-6 py-4 border-t border-[var(--border-color)] bg-[var(--background)]/50">
-            <Link
-              href="/dashboard/content"
-              className="text-[var(--primary-color)] hover:text-[var(--primary-hover)] text-sm font-medium flex items-center"
-            >
-              View All Posts
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="ml-1 h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {postsLoading ? (
+            <div className="col-span-full flex items-center justify-center h-32 text-[var(--text-light)]">
+              Loading posts...
+            </div>
+          ) : postsError ? (
+            <div className="col-span-full flex items-center justify-center h-32 text-red-500">
+              {postsError}
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="col-span-full flex items-center justify-center h-32 text-[var(--text-light)]">
+              No posts found.
+            </div>
+          ) : (
+            posts.slice(0, 4).map((post) => (
+              <div
+                key={post.id}
+                className="bg-[var(--background)] border border-[var(--border-color)] rounded-xl shadow-sm p-5 flex flex-col justify-between min-h-[180px]"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </Link>
-          </div>
+                <div className="flex items-center gap-2 mb-2">
+                  <span
+                    className={`inline-block px-2 py-1 text-xs rounded-full font-medium bg-[var(--primary-color)]/10 text-[var(--primary-color)] capitalize`}
+                  >
+                    {post.platform}
+                  </span>
+                  <span className="ml-auto text-xs text-[var(--text-light)]">
+                    {new Date(post.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="flex-1 mb-3">
+                  <p className="text-[var(--text-color)] text-sm line-clamp-4 whitespace-pre-line">
+                    {post.content.length > 180
+                      ? post.content.slice(0, 180) + "..."
+                      : post.content}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2 mt-auto">
+                  <Link href={`/dashboard/content?post=${post.id}`}>
+                    <Button color="primary" size="sm" variant="flat">
+                      View
+                    </Button>
+                  </Link>
+                  <button
+                    className="ml-auto text-xs text-[var(--primary-color)] hover:underline"
+                    onClick={() => {
+                      navigator.clipboard.writeText(post.content);
+                    }}
+                    title="Copy post content"
+                  >
+                    Copy
+                  </button>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+        <div className="mb-8 flex justify-end">
+          <Link
+            href="/dashboard/content"
+            className="text-[var(--primary-color)] hover:text-[var(--primary-hover)] text-sm font-medium flex items-center"
+          >
+            View All Posts
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="ml-1 h-4 w-4"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </Link>
         </div>
 
         {/* Content Stats Section */}
