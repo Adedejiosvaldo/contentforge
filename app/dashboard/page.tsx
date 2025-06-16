@@ -12,6 +12,9 @@ export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [postsLoading, setPostsLoading] = useState(true);
+  const [postsError, setPostsError] = useState<string | null>(null);
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: "/login" });
@@ -23,10 +26,25 @@ export default function Dashboard() {
       router.replace("/login");
       return;
     }
-
     // Set loading to false when session is loaded
     if (status === "authenticated") {
       setLoading(false);
+      // Fetch posts from API
+      const fetchPosts = async () => {
+        setPostsLoading(true);
+        setPostsError(null);
+        try {
+          const res = await fetch("/api/posts");
+          if (!res.ok) throw new Error("Failed to fetch posts");
+          const data = await res.json();
+          setPosts(data.posts || []);
+        } catch (err: any) {
+          setPostsError(err.message || "Failed to fetch posts");
+        } finally {
+          setPostsLoading(false);
+        }
+      };
+      fetchPosts();
     }
   }, [status, router]);
 
@@ -201,40 +219,54 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody className="bg-[var(--background)] divide-y divide-[var(--border-color)]">
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-color)]">
-                    Check out my latest blog post on sustainable living!
-                    #ecofriendly #sustainability
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                    Twitter
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                    2025-01-15
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <button className="text-[var(--primary-color)] hover:text-[var(--primary-hover)]">
-                      View
-                    </button>
-                  </td>
-                </tr>
-                <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-color)]">
-                    New recipe alert! Try my delicious vegan lasagna. #veganfood
-                    #healthyrecipes
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                    Instagram
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                    2025-01-10
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    <button className="text-[var(--primary-color)] hover:text-[var(--primary-hover)]">
-                      View
-                    </button>
-                  </td>
-                </tr>
+                {postsLoading ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-6 py-4 text-center text-[var(--text-light)]"
+                    >
+                      Loading posts...
+                    </td>
+                  </tr>
+                ) : postsError ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-6 py-4 text-center text-red-500"
+                    >
+                      {postsError}
+                    </td>
+                  </tr>
+                ) : posts.length === 0 ? (
+                  <tr>
+                    <td
+                      colSpan={4}
+                      className="px-6 py-4 text-center text-[var(--text-light)]"
+                    >
+                      No posts found.
+                    </td>
+                  </tr>
+                ) : (
+                  posts.slice(0, 4).map((post) => (
+                    <tr key={post.id}>
+                      <td className="px-6 py-4 whitespace-pre-line text-sm text-[var(--text-color)]">
+                        {post.content}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
+                        {post.platform.charAt(0).toUpperCase() +
+                          post.platform.slice(1)}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
+                        {new Date(post.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <button className="text-[var(--primary-color)] hover:text-[var(--primary-hover)]">
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
             </table>
           </div>

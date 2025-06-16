@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@heroui/react";
@@ -79,14 +79,38 @@ export default function ContentManagement() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [platformFilter, setPlatformFilter] = useState("All");
   const [selectedPosts, setSelectedPosts] = useState<string[]>([]);
+  const [posts, setPosts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string[]>([]);
+  const [bulkDeleting, setBulkDeleting] = useState(false);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/posts");
+        if (!res.ok) throw new Error("Failed to fetch posts");
+        const data = await res.json();
+        setPosts(data.posts || []);
+      } catch (err: any) {
+        setError(err.message || "Failed to fetch posts");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPosts();
+  }, []);
 
   // Filter posts based on search term and filters
-  const filteredPosts = SAMPLE_POSTS.filter((post) => {
+  const filteredPosts = posts.filter((post) => {
     const matchesSearch = post.content
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
+    // No status in DB, so always match or treat as Published
     const matchesStatus =
-      statusFilter === "All" || post.status === statusFilter;
+      statusFilter === "All" || statusFilter === "Published";
     const matchesPlatform =
       platformFilter === "All" || post.platform === platformFilter;
     return matchesSearch && matchesStatus && matchesPlatform;
@@ -105,6 +129,41 @@ export default function ContentManagement() {
       setSelectedPosts(filteredPosts.map((post) => post.id));
     } else {
       setSelectedPosts([]);
+    }
+  };
+
+  // Delete a single post
+  const handleDelete = async (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this post?")) return;
+    setDeleting((prev) => [...prev, id]);
+    try {
+      const res = await fetch(`/api/posts?id=${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete post");
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+      setSelectedPosts((prev) => prev.filter((pid) => pid !== id));
+    } catch (err) {
+      alert("Error deleting post");
+    } finally {
+      setDeleting((prev) => prev.filter((pid) => pid !== id));
+    }
+  };
+
+  // Bulk delete
+  const handleBulkDelete = async () => {
+    if (!window.confirm("Delete all selected posts?")) return;
+    setBulkDeleting(true);
+    try {
+      await Promise.all(
+        selectedPosts.map((id) =>
+          fetch(`/api/posts?id=${id}`, { method: "DELETE" })
+        )
+      );
+      setPosts((prev) => prev.filter((p) => !selectedPosts.includes(p.id)));
+      setSelectedPosts([]);
+    } catch (err) {
+      alert("Error deleting some posts");
+    } finally {
+      setBulkDeleting(false);
     }
   };
 
@@ -314,7 +373,7 @@ export default function ContentManagement() {
                 {selectedPosts.length === 1 ? "item" : "items"} selected
               </div>
               <div className="flex gap-3">
-                <Button size="sm" color="default" variant="bordered">
+                <Button size="sm" color="default" variant="bordered" disabled>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 mr-1"
@@ -331,7 +390,13 @@ export default function ContentManagement() {
                   </svg>
                   Edit
                 </Button>
-                <Button size="sm" color="danger" variant="flat">
+                <Button
+                  size="sm"
+                  color="danger"
+                  variant="flat"
+                  onClick={handleBulkDelete}
+                  disabled={bulkDeleting}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-4 w-4 mr-1"
@@ -346,7 +411,7 @@ export default function ContentManagement() {
                       d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
                     />
                   </svg>
-                  Delete
+                  {bulkDeleting ? "Deleting..." : "Delete"}
                 </Button>
               </div>
             </div>
@@ -491,7 +556,10 @@ export default function ContentManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex justify-end space-x-2">
-                          <button className="text-[var(--primary-color)] hover:text-[var(--primary-hover)]">
+                          <button
+                            className="text-[var(--primary-color)] opacity-50 cursor-not-allowed"
+                            disabled
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-5 w-5"
@@ -507,7 +575,11 @@ export default function ContentManagement() {
                               />
                             </svg>
                           </button>
-                          <button className="text-red-500 hover:text-red-700">
+                          <button
+                            className="text-red-500 hover:text-red-700"
+                            onClick={() => handleDelete(post.id)}
+                            disabled={deleting.includes(post.id)}
+                          >
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               className="h-5 w-5"
@@ -541,7 +613,7 @@ export default function ContentManagement() {
                 </span>{" "}
                 of{" "}
                 <span className="font-medium text-[var(--text-color)]">
-                  {SAMPLE_POSTS.length}
+                  {posts.length}
                 </span>{" "}
                 posts
               </div>

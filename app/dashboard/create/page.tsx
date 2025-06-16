@@ -116,6 +116,38 @@ export default function CreateContent() {
     }
   };
 
+  // Save generated posts to DB
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const handleSaveContent = async () => {
+    setIsSaving(true);
+    setSaveSuccess(false);
+    setSaveError(null);
+    try {
+      const savePromises = Object.entries(generatedContent).map(
+        async ([platform, content]) => {
+          if (content) {
+            const res = await fetch("/api/posts", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ platform, content }),
+            });
+            if (!res.ok) throw new Error(`Failed to save for ${platform}`);
+          }
+        }
+      );
+      await Promise.all(savePromises);
+      setSaveSuccess(true);
+    } catch (err: any) {
+      setSaveError(err.message || "Failed to save content");
+    } finally {
+      setIsSaving(false);
+      setTimeout(() => setSaveSuccess(false), 2000);
+    }
+  };
+
   const platformCount = Object.values(currentPlatforms).filter(Boolean).length;
 
   return (
@@ -678,9 +710,20 @@ export default function CreateContent() {
                     </svg>
                     Regenerate
                   </Button>
-                  <Button size="sm" color="primary">
-                    Save Content
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onClick={handleSaveContent}
+                    isLoading={isSaving}
+                    disabled={isSaving}
+                  >
+                    {saveSuccess ? "Saved!" : "Save Content"}
                   </Button>
+                  {saveError && (
+                    <span className="text-xs text-red-500 ml-2">
+                      {saveError}
+                    </span>
+                  )}
                 </div>
               )}
             </div>
