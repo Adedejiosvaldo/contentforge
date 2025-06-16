@@ -134,33 +134,18 @@ export default function Home() {
                   <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-color)]/10 rounded-full filter blur-[80px] -z-10"></div>
 
                   <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-6 md:mb-8 leading-tight text-[var(--text-color)] relative">
-                    <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-color)] via-[var(--primary-color)] to-[var(--text-color)]">
-                      Create Engaging Content
-                    </span>
-                    <br />
-                    <span className="relative z-10">
-                      Across All Platforms
-                      <svg
-                        className="absolute -bottom-2 left-0 w-full h-2 text-[var(--primary-color)]/20"
-                        viewBox="0 0 300 12"
-                        preserveAspectRatio="none"
-                      >
-                        <path
-                          d="M0,0 C50,12 100,12 150,6 C200,0 250,0 300,12 L300,12 L0,12 Z"
-                          fill="currentColor"
-                        ></path>
-                      </svg>
-                    </span>
+                    Create. Post. Go Viral.
                   </h1>
                   <p className="text-base md:text-lg lg:text-xl text-[var(--text-light)] mb-8 md:mb-12 max-w-xl mx-auto md:mx-0">
-                    Effortlessly craft compelling posts for Instagram, Twitter,
-                    LinkedIn, and more. Let AI enhance your social media
-                    presence with engaging, platform-optimized content.
+                    Instantly generate scroll-stopping posts for Instagram, X
+                    (Twitter), LinkedIn, and more. ContentCraft’s advanced AI
+                    helps you grow your audience, boost engagement, and save
+                    hours every week—no creative block, no hassle.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-center justify-center md:justify-start">
                     <Link href="/signup" className="w-full sm:w-auto">
                       <button className="w-full sm:w-auto ripple-container px-6 py-3 bg-[var(--primary-color)] text-white font-medium rounded-full hover:bg-[var(--primary-hover)] transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
-                        Start Creating
+                        Try ContentCraft Free
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
@@ -180,7 +165,7 @@ export default function Home() {
                       href="#demo"
                       className="text-[var(--text-light)] hover:text-[var(--text-color)] transition-colors flex items-center gap-2"
                     >
-                      See Examples
+                      See AI in Action
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -242,7 +227,7 @@ export default function Home() {
                 </span>
               </h2>
               <p className="text-xl text-[var(--text-light)] max-w-3xl mx-auto">
-                Powerful features to enhance your productivity and creativity
+                Everything you need to grow your brand and save time
               </p>
             </div>
 
@@ -252,43 +237,14 @@ export default function Home() {
               <div className="group relative">
                 <div className="absolute inset-0.5 bg-gradient-to-br from-[var(--primary-color)]/20 to-[var(--accent-color)]/20 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-500"></div>
                 <div className="glass backdrop-blur-sm bg-[var(--card-bg)]/60 rounded-2xl p-8 border border-[var(--border-color)] shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 relative">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary-color)] to-[var(--accent-color)] p-0.5 mb-8">
-                    <div className="w-full h-full rounded-2xl bg-[var(--background)]/90 flex items-center justify-center">
-                      <Image
-                        src="/zap.svg"
-                        alt="Fast"
-                        width={24}
-                        height={24}
-                        className="group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-[var(--primary-color)] transition duration-300">
-                    Lightning Fast
+                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-zinc-400 transition duration-300">
+                    Instant Results
                   </h3>
                   <p className="text-[var(--text-light)] group-hover:text-[var(--text-color)] transition-colors duration-300">
-                    Get instant responses without any perceptible delay or lag.
-                    Our cutting-edge optimization ensures your content is ready
-                    when you are.
+                    Generate ready-to-post content in seconds. No more
+                    waiting—just click, copy, and share. ContentCraft delivers
+                    high-quality results instantly, so you never miss a trend.
                   </p>
-
-                  <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[var(--primary-color)]"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </div>
                 </div>
               </div>
 
@@ -296,43 +252,14 @@ export default function Home() {
               <div className="group relative mt-6 md:mt-0">
                 <div className="absolute inset-0.5 bg-gradient-to-br from-[var(--primary-color)]/20 to-[var(--accent-color)]/20 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-500"></div>
                 <div className="glass backdrop-blur-sm bg-[var(--card-bg)]/60 rounded-2xl p-8 border border-[var(--border-color)] shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 relative">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary-color)] to-[var(--accent-color)] p-0.5 mb-8">
-                    <div className="w-full h-full rounded-2xl bg-[var(--background)]/90 flex items-center justify-center">
-                      <Image
-                        src="/heart.svg"
-                        alt="Reliable"
-                        width={24}
-                        height={24}
-                        className="group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-[var(--primary-color)] transition duration-300">
-                    Smart & Intuitive
+                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-zinc-400 transition duration-300">
+                    AI That Understands You
                   </h3>
                   <p className="text-[var(--text-light)] group-hover:text-[var(--text-color)] transition-colors duration-300">
-                    Understands context and delivers relevant information when
-                    you need it. Our AI adapts to your unique style and
-                    preferences over time.
+                    ContentCraft learns your brand voice and adapts to your
+                    style. Get tailored suggestions and platform-optimised posts
+                    that resonate with your audience—every single time.
                   </p>
-
-                  <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[var(--primary-color)]"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </div>
                 </div>
               </div>
 
@@ -340,43 +267,14 @@ export default function Home() {
               <div className="group relative mt-6 md:mt-12 lg:mt-0">
                 <div className="absolute inset-0.5 bg-gradient-to-br from-[var(--primary-color)]/20 to-[var(--accent-color)]/20 rounded-2xl blur opacity-70 group-hover:opacity-100 transition duration-500"></div>
                 <div className="glass backdrop-blur-sm bg-[var(--card-bg)]/60 rounded-2xl p-8 border border-[var(--border-color)] shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 relative">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[var(--primary-color)] to-[var(--accent-color)] p-0.5 mb-8">
-                    <div className="w-full h-full rounded-2xl bg-[var(--background)]/90 flex items-center justify-center">
-                      <Image
-                        src="/design.svg"
-                        alt="Design"
-                        width={24}
-                        height={24}
-                        className="group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-[var(--primary-color)] transition duration-300">
-                    Beautifully Designed
+                  <h3 className="text-2xl font-bold mb-4 text-[var(--text-color)] group-hover:text-zinc-400 transition duration-300">
+                    Effortless & Beautiful
                   </h3>
-                  <p className="text-[var(--text-light)] group-hover:text-[var(--text-color)] transition-colors duration-300">
-                    Clean, modern interface that adapts to your preferences.
-                    Enjoy a seamless experience with our thoughtfully crafted UI
-                    across all devices.
+                  <p className="text-[var(--text-light)] transition-colors duration-300">
+                    Enjoy a seamless, distraction-free experience. Our intuitive
+                    interface lets you focus on what matters—creating and
+                    sharing amazing content, anywhere, on any device.
                   </p>
-
-                  <div className="absolute bottom-6 right-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="text-[var(--primary-color)]"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                      <polyline points="12 5 19 12 12 19"></polyline>
-                    </svg>
-                  </div>
                 </div>
               </div>
             </div>
@@ -1054,29 +952,50 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="w-full py-8 bg-[var(--background)]">
-        <div className="container mx-auto px-6 text-center text-sm text-[var(--text-light)]">
-          <div className="flex justify-center items-center gap-6 mb-4">
+      <footer className="w-full bg-[var(--background)] border-t border-[var(--border-color)] py-8 mt-12">
+        <div className="container mx-auto px-6 flex flex-col items-center gap-3">
+          <div className="flex items-center mb-2">
+            <img
+              src="/contentcraft-logo.svg"
+              alt="ContentCraft Logo"
+              className="w-7 h-7"
+            />
+            <span className="font-semibold text-base text-[var(--text-color)]">
+              ContentCraft
+            </span>
+          </div>
+          <p className="text-[var(--text-light)] text-sm mb-2 text-center">
+            AI-powered content creation for every platform.
+          </p>
+          <div className="flex gap-6 mb-2">
+            <a
+              href="#features"
+              className="hover:text-[var(--primary-color)] transition-colors text-sm"
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="hover:text-[var(--primary-color)] transition-colors text-sm"
+            >
+              Pricing
+            </a>
+            <a
+              href="#help"
+              className="hover:text-[var(--primary-color)] transition-colors text-sm"
+            >
+              Help
+            </a>
             <a
               href="#"
-              className="hover:text-[var(--text-color)] transition-colors"
+              className="hover:text-[var(--primary-color)] transition-colors text-sm"
             >
               Privacy
             </a>
-            <a
-              href="#"
-              className="hover:text-[var(--text-color)] transition-colors"
-            >
-              Terms
-            </a>
-            <a
-              href="#"
-              className="hover:text-[var(--text-color)] transition-colors"
-            >
-              Contact
-            </a>
           </div>
-          <p>© 2024 ContentCraft. All rights reserved.</p>
+          <span className="text-xs text-[var(--text-light)]">
+            © 2025 ContentCraft. All rights reserved.
+          </span>
         </div>
       </footer>
       {/* Mobile menu overlay moved to end of component for proper stacking */}
