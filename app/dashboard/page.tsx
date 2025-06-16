@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import Image from "next/image";
@@ -16,6 +16,33 @@ export default function Dashboard() {
   const [postsLoading, setPostsLoading] = useState(true);
   const [postsError, setPostsError] = useState<string | null>(null);
   const [copiedPostId, setCopiedPostId] = useState<string | null>(null);
+
+  const contentStats = useMemo(() => {
+    if (!posts || posts.length === 0) {
+      return {
+        totalPosts: 0,
+        publishedPosts: 0,
+        drafts: 0,
+        scheduled: 0,
+        totalWords: 0,
+      };
+    }
+
+    const totalPosts = posts.length;
+    // Assuming all posts are published for now
+    const publishedPosts = posts.length;
+    const totalWords = posts.reduce((acc, post) => {
+      return acc + (post.content?.split(/\s+/).filter(Boolean).length || 0);
+    }, 0);
+
+    return {
+      totalPosts,
+      publishedPosts,
+      drafts: 0, // Placeholder
+      scheduled: 0, // Placeholder
+      totalWords,
+    };
+  }, [posts]);
 
   const handleLogout = async () => {
     await signOut({ redirect: true, callbackUrl: "/login" });
@@ -298,25 +325,33 @@ export default function Dashboard() {
             <h3 className="text-[var(--text-light)] text-sm font-medium mb-2">
               Total Content
             </h3>
-            <p className="text-2xl font-bold text-[var(--text-color)]">0</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">
+              {contentStats.totalPosts}
+            </p>
+          </div>
+          <div className="bg-[var(--background)]/50 border border-[var(--border-color)] p-5 rounded-xl">
+            <h3 className="text-[var(--text-light)] text-sm font-medium mb-2">
+              Total Words
+            </h3>
+            <p className="text-2xl font-bold text-[var(--text-color)]">
+              {contentStats.totalWords}
+            </p>
           </div>
           <div className="bg-[var(--background)]/50 border border-[var(--border-color)] p-5 rounded-xl">
             <h3 className="text-[var(--text-light)] text-sm font-medium mb-2">
               Published
             </h3>
-            <p className="text-2xl font-bold text-[var(--text-color)]">0</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">
+              {contentStats.publishedPosts}
+            </p>
           </div>
           <div className="bg-[var(--background)]/50 border border-[var(--border-color)] p-5 rounded-xl">
             <h3 className="text-[var(--text-light)] text-sm font-medium mb-2">
               Drafts
             </h3>
-            <p className="text-2xl font-bold text-[var(--text-color)]">0</p>
-          </div>
-          <div className="bg-[var(--background)]/50 border border-[var(--border-color)] p-5 rounded-xl">
-            <h3 className="text-[var(--text-light)] text-sm font-medium mb-2">
-              Scheduled
-            </h3>
-            <p className="text-2xl font-bold text-[var(--text-color)]">0</p>
+            <p className="text-2xl font-bold text-[var(--text-color)]">
+              {contentStats.drafts}
+            </p>
           </div>
         </div>
       </main>
