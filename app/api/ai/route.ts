@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
 
     for (const platform of socialMediaPlatforms) {
       // Construct the detailed prompt
-      let detailedPrompt = `You are an expert social media content creator.
+      let detailedPrompt = `You are an expert social media content creator with decades of experience writing compelling posts that has garnered hundreds of thousands of likes.
       Your task is to generate a compelling post for the ${platform} platform based on the following input: "${prompt}".
 
       Consider the following user profile for tone, style, and content:
@@ -93,13 +93,21 @@ export async function POST(request: NextRequest) {
       - User Bio/Brand Voice: ${bio || "Professional and engaging"}
       - User Interests: ${interests}
 
-      The post should:
+      The post MUST:
       1. Be highly engaging and optimized to gain traction and likes.
       2. Sound human, authentic, and relatable to the target audience.
       3. Include relevant and effective hashtags to maximize reach.
       4. Be tailored specifically for the ${platform} platform, considering its best practices (e.g., character limits for Twitter, visual focus for Instagram).
+      5. Be formatted with appropriate paragraph breaks and line breaks for excellent readability. Use new lines for new paragraphs or distinct ideas.
+      6. Contain ONLY the social media post content itself. Do NOT include any introductory phrases, explanations, or Markdown formatting (e.g., no ---, #, *, _).
+      7. Use keywords naturally within the post to enhance discoverability.
+      8. You can chose to be creative with emojis, but use them sparingly and only if they fit the platform's tone.
+      9. Optionally choose to include a call to action (CTA) if it fits the context of the post.
+      10. Be concise and to the point, avoiding unnecessary fluff or filler content.
+      11. Add humor or wit if it fits the context and platform, but ensure it aligns with the brand voice.
 
-      Generate the post content now:
+
+      Generate ONLY the post content now:
       `;
 
       try {
