@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button } from "@heroui/react";
+import { Button, Textarea } from "@heroui/react"; // Added Textarea
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PostScheduling from "@/components/dashboard/PostScheduling";
 
@@ -11,9 +11,10 @@ export default function CreateContent() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("post");
   const [prompt, setPrompt] = useState("");
+  const [promptError, setPromptError] = useState(""); // New state for prompt error
   const [generatedContent, setGeneratedContent] = useState<
     Record<string, string>
-  >({}); // Store generated content for each platform
+  >({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [platforms, setPlatforms] = useState({
     twitter: true,
@@ -22,8 +23,17 @@ export default function CreateContent() {
     linkedin: false,
   });
 
+  const validatePrompt = (): boolean => {
+    if (!prompt.trim()) {
+      setPromptError("Prompt cannot be empty.");
+      return false;
+    }
+    setPromptError("");
+    return true;
+  };
+
   const handleGenerate = async () => {
-    if (!prompt) return;
+    if (!validatePrompt()) return;
 
     setIsGenerating(true);
     setGeneratedContent({}); // Clear previous content
@@ -80,6 +90,13 @@ export default function CreateContent() {
     }));
   };
 
+  const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPrompt(e.target.value);
+    if (promptError) {
+      setPromptError("");
+    }
+  };
+
   const platformCount = Object.values(platforms).filter(Boolean).length;
 
   return (
@@ -106,42 +123,6 @@ export default function CreateContent() {
           </div>
         </div>
 
-        {/* Content Type Tabs */}
-        <div className="mb-6 border-b border-[var(--border-color)]">
-          <nav className="flex space-x-8">
-            <button
-              onClick={() => setActiveTab("post")}
-              className={`py-3 border-b-2 text-sm font-medium transition-colors ${
-                activeTab === "post"
-                  ? "border-[var(--primary-color)] text-[var(--primary-color)]"
-                  : "border-transparent text-[var(--text-light)] hover:text-[var(--text-color)] hover:border-[var(--border-color)]"
-              }`}
-            >
-              Social Post
-            </button>
-            <button
-              onClick={() => setActiveTab("article")}
-              className={`py-3 border-b-2 text-sm font-medium transition-colors ${
-                activeTab === "article"
-                  ? "border-[var(--primary-color)] text-[var(--primary-color)]"
-                  : "border-transparent text-[var(--text-light)] hover:text-[var(--text-color)] hover:border-[var(--border-color)]"
-              }`}
-            >
-              Article
-            </button>
-            <button
-              onClick={() => setActiveTab("email")}
-              className={`py-3 border-b-2 text-sm font-medium transition-colors ${
-                activeTab === "email"
-                  ? "border-[var(--primary-color)] text-[var(--primary-color)]"
-                  : "border-transparent text-[var(--text-light)] hover:text-[var(--text-color)] hover:border-[var(--border-color)]"
-              }`}
-            >
-              Email
-            </button>
-          </nav>
-        </div>
-
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Input Section */}
           <div className="lg:col-span-1">
@@ -155,14 +136,22 @@ export default function CreateContent() {
                 >
                   Prompt
                 </label>
-                <textarea
+                <Textarea
                   id="prompt"
-                  rows={6}
+                  rows={10}
                   value={prompt}
-                  onChange={(e) => setPrompt(e.target.value)}
+                  onChange={handlePromptChange} // Use new handler
                   placeholder="Describe what you want to post about..."
-                  className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--background)] px-4 py-3 text-sm focus:border-[var(--primary-color)] focus:outline-none focus:ring-1 focus:ring-[var(--primary-color)]"
+                  className={`w-full text-sm ${
+                    promptError
+                      ? "border-red-500 focus:border-red-500 ring-red-500"
+                      : ""
+                  }`}
+                  // color={promptError ? "danger" : "default"} // HeroUI specific error state if available
                 />
+                {promptError && (
+                  <p className="text-xs text-red-500 mt-1">{promptError}</p>
+                )}
               </div>
 
               <div className="mb-6">
@@ -170,138 +159,42 @@ export default function CreateContent() {
                   Target Platforms ({platformCount})
                 </label>
                 <div className="grid grid-cols-2 gap-3">
-                  <div
-                    onClick={() => togglePlatform("twitter")}
-                    className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
-                      platforms.twitter
-                        ? "border-[var(--primary-color)] bg-[var(--primary-color)]/10"
-                        : "border-[var(--border-color)]"
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 ${
-                        platforms.twitter
-                          ? "bg-[var(--primary-color)]"
-                          : "border border-[var(--border-color)]"
-                      }`}
+                  {(
+                    Object.keys(platforms) as Array<keyof typeof platforms>
+                  ).map((platformKey) => (
+                    <Button
+                      key={platformKey}
+                      variant={platforms[platformKey] ? "solid" : "ghost"}
+                      color={platforms[platformKey] ? "primary" : "default"}
+                      onClick={() => togglePlatform(platformKey)}
+                      className="flex items-center justify-start p-3 w-full text-sm"
                     >
-                      {platforms.twitter && (
-                        <svg
-                          className="text-white w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-sm">Twitter</span>
-                  </div>
-                  <div
-                    onClick={() => togglePlatform("facebook")}
-                    className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
-                      platforms.facebook
-                        ? "border-[var(--primary-color)] bg-[var(--primary-color)]/10"
-                        : "border-[var(--border-color)]"
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 ${
-                        platforms.facebook
-                          ? "bg-[var(--primary-color)]"
-                          : "border border-[var(--border-color)]"
-                      }`}
-                    >
-                      {platforms.facebook && (
-                        <svg
-                          className="text-white w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-sm">Facebook</span>
-                  </div>
-                  <div
-                    onClick={() => togglePlatform("instagram")}
-                    className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
-                      platforms.instagram
-                        ? "border-[var(--primary-color)] bg-[var(--primary-color)]/10"
-                        : "border-[var(--border-color)]"
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 ${
-                        platforms.instagram
-                          ? "bg-[var(--primary-color)]"
-                          : "border border-[var(--border-color)]"
-                      }`}
-                    >
-                      {platforms.instagram && (
-                        <svg
-                          className="text-white w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-sm">Instagram</span>
-                  </div>
-                  <div
-                    onClick={() => togglePlatform("linkedin")}
-                    className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all ${
-                      platforms.linkedin
-                        ? "border-[var(--primary-color)] bg-[var(--primary-color)]/10"
-                        : "border-[var(--border-color)]"
-                    }`}
-                  >
-                    <div
-                      className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 ${
-                        platforms.linkedin
-                          ? "bg-[var(--primary-color)]"
-                          : "border border-[var(--border-color)]"
-                      }`}
-                    >
-                      {platforms.linkedin && (
-                        <svg
-                          className="text-white w-4 h-4"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={3}
-                            d="M5 13l4 4L19 7"
-                          />
-                        </svg>
-                      )}
-                    </div>
-                    <span className="text-sm">LinkedIn</span>
-                  </div>
+                      <div
+                        className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 border ${
+                          platforms[platformKey]
+                            ? "bg-[var(--primary-color)] border-[var(--primary-color)]"
+                            : "border-[var(--border-color)]"
+                        }`}
+                      >
+                        {platforms[platformKey] && (
+                          <svg
+                            className="text-white w-4 h-4"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={3}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                        )}
+                      </div>
+                      <span className="capitalize">{platformKey}</span>
+                    </Button>
+                  ))}
                 </div>
               </div>
 
@@ -362,11 +255,12 @@ export default function CreateContent() {
 
               <Button
                 color="primary"
-                className="w-full mt-4"
+                className="w-full justify-center py-3 text-base font-semibold transition-colors"
                 onClick={handleGenerate}
-                disabled={!prompt || isGenerating}
+                disabled={isGenerating || !!promptError || platformCount === 0}
+                isLoading={isGenerating} // Changed loading to isLoading
               >
-                {isGenerating ? "Generating..." : "Generate Content"}
+                Generate Content
               </Button>
             </div>
           </div>
@@ -680,7 +574,13 @@ export default function CreateContent() {
 
               {prompt && !isGenerating && (
                 <div className="flex justify-between mt-6 pt-4 border-t border-[var(--border-color)]">
-                  <button className="text-[var(--text-light)] text-sm flex items-center">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={handleGenerate} // Assuming regenerate calls handleGenerate again
+                    disabled={isGenerating || !!promptError} // Disable if error or generating
+                    className="text-[var(--text-light)] text-sm flex items-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-4 w-4 mr-1"
@@ -696,7 +596,7 @@ export default function CreateContent() {
                       />
                     </svg>
                     Regenerate
-                  </button>
+                  </Button>
                   <Button size="sm" color="primary">
                     Save Content
                   </Button>
