@@ -36,6 +36,7 @@ export default function CreateContent() {
     Record<string, string>
   >({});
   const [isGenerating, setIsGenerating] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<Record<string, boolean>>({}); // Track copy feedback per platform
 
   const {
     register,
@@ -102,6 +103,17 @@ export default function CreateContent() {
     setValue(`platforms.${platformName}`, !currentPlatforms[platformName], {
       shouldValidate: true, // Trigger validation for platforms
     });
+  };
+
+  // Copy to clipboard handler
+  const handleCopy = (platform: string) => {
+    if (generatedContent[platform]) {
+      navigator.clipboard.writeText(generatedContent[platform]);
+      setCopyStatus((prev) => ({ ...prev, [platform]: true }));
+      setTimeout(() => {
+        setCopyStatus((prev) => ({ ...prev, [platform]: false }));
+      }, 1500);
+    }
   };
 
   const platformCount = Object.values(currentPlatforms).filter(Boolean).length;
@@ -335,63 +347,72 @@ export default function CreateContent() {
                 </div>
               ) : Object.keys(generatedContent).length > 0 ? ( // Check if generatedContent has data
                 <div className="space-y-6">
-                  {currentPlatforms.twitter &&
-                    generatedContent.twitter && ( // Also check if content for specific platform exists
-                      <div className="border border-[var(--border-color)] rounded-lg p-4">
-                        <div className="flex items-center mb-3">
-                          <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                            </svg>
-                          </div>
-                          <h3 className="font-medium">Twitter Post</h3>
-                          <div className="flex ml-auto">
-                            <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                                />
-                              </svg>
-                            </button>
-                            <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-5 w-5"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth={1.5}
-                                  d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                                />
-                              </svg>
-                            </button>
-                          </div>
+                  {currentPlatforms.twitter && generatedContent.twitter && (
+                    <div className="border border-[var(--border-color)] rounded-lg p-4">
+                      <div className="flex items-center mb-3">
+                        <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                          </svg>
                         </div>
-                        <div className="text-sm">
-                          <p className="text-[var(--text-color)]">
-                            {generatedContent.twitter}
-                          </p>
+                        <h3 className="font-medium">Twitter Post</h3>
+                        <div className="flex ml-auto gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCopy("twitter")}
+                            className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
+                            aria-label="Copy Twitter post"
+                          >
+                            {copyStatus.twitter ? (
+                              <span className="flex items-center text-green-600 text-xs font-medium">
+                                <svg
+                                  className="h-4 w-4 mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                                Copied!
+                              </span>
+                            ) : (
+                              <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                />
+                                <path d="M5 15V5a2 2 0 012-2h10" />
+                              </svg>
+                            )}
+                          </button>
                         </div>
                       </div>
-                    )}
+                      <div className="text-sm">
+                        <p className="text-[var(--text-color)]">
+                          {generatedContent.twitter}
+                        </p>
+                      </div>
+                    </div>
+                  )}
 
                   {currentPlatforms.facebook && generatedContent.facebook && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
@@ -407,38 +428,48 @@ export default function CreateContent() {
                           </svg>
                         </div>
                         <h3 className="font-medium">Facebook Post</h3>
-                        <div className="flex ml-auto">
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                              />
-                            </svg>
-                          </button>
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
+                        <div className="flex ml-auto gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCopy("facebook")}
+                            className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
+                            aria-label="Copy Facebook post"
+                          >
+                            {copyStatus.facebook ? (
+                              <span className="flex items-center text-green-600 text-xs font-medium">
+                                <svg
+                                  className="h-4 w-4 mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                                Copied!
+                              </span>
+                            ) : (
+                              <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                />
+                                <path d="M5 15V5a2 2 0 012-2h10" />
+                              </svg>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -473,38 +504,48 @@ export default function CreateContent() {
                           </svg>
                         </div>
                         <h3 className="font-medium">Instagram Post</h3>
-                        <div className="flex ml-auto">
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                              />
-                            </svg>
-                          </button>
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
+                        <div className="flex ml-auto gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCopy("instagram")}
+                            className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
+                            aria-label="Copy Instagram post"
+                          >
+                            {copyStatus.instagram ? (
+                              <span className="flex items-center text-green-600 text-xs font-medium">
+                                <svg
+                                  className="h-4 w-4 mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                                Copied!
+                              </span>
+                            ) : (
+                              <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                />
+                                <path d="M5 15V5a2 2 0 012-2h10" />
+                              </svg>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -532,38 +573,48 @@ export default function CreateContent() {
                           </svg>
                         </div>
                         <h3 className="font-medium">LinkedIn Post</h3>
-                        <div className="flex ml-auto">
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
-                              />
-                            </svg>
-                          </button>
-                          <button className="text-[var(--text-light)] hover:text-[var(--text-color)] p-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
+                        <div className="flex ml-auto gap-2">
+                          <button
+                            type="button"
+                            onClick={() => handleCopy("linkedin")}
+                            className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
+                            aria-label="Copy LinkedIn post"
+                          >
+                            {copyStatus.linkedin ? (
+                              <span className="flex items-center text-green-600 text-xs font-medium">
+                                <svg
+                                  className="h-4 w-4 mr-1"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="2"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                                Copied!
+                              </span>
+                            ) : (
+                              <svg
+                                className="h-5 w-5"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                viewBox="0 0 24 24"
+                              >
+                                <rect
+                                  x="9"
+                                  y="9"
+                                  width="13"
+                                  height="13"
+                                  rx="2"
+                                />
+                                <path d="M5 15V5a2 2 0 012-2h10" />
+                              </svg>
+                            )}
                           </button>
                         </div>
                       </div>

@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       3. Include relevant and effective hashtags to maximize reach.
       4. Be tailored specifically for the ${platform} platform, considering its best practices (e.g., character limits for Twitter, visual focus for Instagram).
       5. Be formatted with appropriate paragraph breaks and line breaks for excellent readability. Use new lines for new paragraphs or distinct ideas.
-      6. Contain ONLY the social media post content itself. Do NOT include any introductory phrases, explanations, or Markdown formatting (e.g., no ---, #, *, _).
+      6. Contain ONLY the social media post content itself. Do NOT include any introductory phrases, explanations, or Markdown formatting (e.g., no ---, #, *, _, **). Specifically, do not use asterisks or underscores for bolding or italics.
       7. Use keywords naturally within the post to enhance discoverability.
       8. You can chose to be creative with emojis, but use them sparingly and only if they fit the platform's tone.
       9. Optionally choose to include a call to action (CTA) if it fits the context of the post.
