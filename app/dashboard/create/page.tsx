@@ -396,11 +396,11 @@ export default function CreateContent() {
                         <div className="flex ml-auto gap-2">
                           <button
                             type="button"
-                            onClick={() => handleCopy("twitter")}
+                            onClick={() => handleCopy("Twitter")}
                             className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
                             aria-label="Copy Twitter post"
                           >
-                            {copyStatus.twitter ? (
+                            {copyStatus.Twitter ? (
                               <span className="flex items-center text-green-600 text-xs font-medium">
                                 <svg
                                   className="h-4 w-4 mr-1"
@@ -440,7 +440,7 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.twitter}
+                          {generatedContent.Twitter}
                         </p>
                       </div>
                     </div>
@@ -463,11 +463,11 @@ export default function CreateContent() {
                         <div className="flex ml-auto gap-2">
                           <button
                             type="button"
-                            onClick={() => handleCopy("facebook")}
+                            onClick={() => handleCopy("Facebook")}
                             className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
                             aria-label="Copy Facebook post"
                           >
-                            {copyStatus.facebook ? (
+                            {copyStatus.Facebook ? (
                               <span className="flex items-center text-green-600 text-xs font-medium">
                                 <svg
                                   className="h-4 w-4 mr-1"
@@ -507,7 +507,7 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.facebook}
+                          {generatedContent.Facebook}
                         </p>
                       </div>
                     </div>
@@ -539,11 +539,11 @@ export default function CreateContent() {
                         <div className="flex ml-auto gap-2">
                           <button
                             type="button"
-                            onClick={() => handleCopy("instagram")}
+                            onClick={() => handleCopy("Instagram")}
                             className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
                             aria-label="Copy Instagram post"
                           >
-                            {copyStatus.instagram ? (
+                            {copyStatus.Instagram ? (
                               <span className="flex items-center text-green-600 text-xs font-medium">
                                 <svg
                                   className="h-4 w-4 mr-1"
@@ -583,7 +583,7 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.instagram}
+                          {generatedContent.Instagram}
                         </p>
                       </div>
                     </div>
@@ -608,11 +608,11 @@ export default function CreateContent() {
                         <div className="flex ml-auto gap-2">
                           <button
                             type="button"
-                            onClick={() => handleCopy("linkedin")}
+                            onClick={() => handleCopy("LinkedIn")}
                             className="text-[var(--text-light)] hover:text-[var(--primary-color)] p-1"
                             aria-label="Copy LinkedIn post"
                           >
-                            {copyStatus.linkedin ? (
+                            {copyStatus.LinkedIn ? (
                               <span className="flex items-center text-green-600 text-xs font-medium">
                                 <svg
                                   className="h-4 w-4 mr-1"
@@ -652,7 +652,7 @@ export default function CreateContent() {
                       </div>
                       <div className="text-sm">
                         <p className="text-[var(--text-color)]">
-                          {generatedContent.linkedin}
+                          {generatedContent.LinkedIn}
                         </p>
                       </div>
                     </div>

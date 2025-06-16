@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { Button } from "@heroui/react";
@@ -18,37 +18,39 @@ export default function ContentManagement() {
   const [deleting, setDeleting] = useState<string[]>([]);
   const [bulkDeleting, setBulkDeleting] = useState(false);
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/posts");
-        if (!res.ok) throw new Error("Failed to fetch posts");
-        const data = await res.json();
-        console.log("Fetched posts:", data.posts);
-        setPosts(data.posts || []);
-      } catch (err: any) {
-        setError(err.message || "Failed to fetch posts");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
+  const fetchPosts = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/posts");
+      if (!res.ok) throw new Error("Failed to fetch posts");
+      const data = await res.json();
+      console.log("Fetched posts:", data.posts);
+      setPosts(data.posts || []);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch posts");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // Filter posts based on search term and filters
-  const filteredPosts = posts.filter((post) => {
-    const matchesSearch = post.content
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
-    // No status in DB, so always match or treat as Published
-    const matchesStatus =
-      statusFilter === "All" || statusFilter === "Published";
-    const matchesPlatform =
-      platformFilter === "All" || post.platform === platformFilter;
-    return matchesSearch && matchesStatus && matchesPlatform;
-  });
+  useEffect(() => {
+    fetchPosts();
+  }, [fetchPosts]);
+
+  const filteredPosts = useMemo(() => {
+    if (!Array.isArray(posts)) return [];
+    return posts.filter((post) => {
+      const matchesSearch = post.content
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        statusFilter === "All" || statusFilter === "Published"; // No status in DB, so always match
+      const matchesPlatform =
+        platformFilter === "All" || post.platform === platformFilter;
+      return matchesSearch && matchesStatus && matchesPlatform;
+    });
+  }, [posts, searchTerm, statusFilter, platformFilter]);
 
   const togglePostSelection = (postId: string) => {
     setSelectedPosts((prev) =>
@@ -66,40 +68,48 @@ export default function ContentManagement() {
     }
   };
 
-  // Delete a single post
-  const handleDelete = async (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this post?")) return;
-    setDeleting((prev) => [...prev, id]);
-    try {
-      const res = await fetch(`/api/posts?id=${id}`, { method: "DELETE" });
-      if (!res.ok) throw new Error("Failed to delete post");
-      setPosts((prev) => prev.filter((p) => p.id !== id));
-      setSelectedPosts((prev) => prev.filter((pid) => pid !== id));
-    } catch (err) {
-      alert("Error deleting post");
-    } finally {
-      setDeleting((prev) => prev.filter((pid) => pid !== id));
-    }
-  };
+  const handleDelete = useCallback(
+    async (id: string) => {
+      if (!window.confirm("Are you sure you want to delete this post?")) return;
+      setDeleting((prev) => [...prev, id]);
+      try {
+        const res = await fetch(`/api/posts?id=${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete post");
+        await fetchPosts();
+        setSelectedPosts((prev) => prev.filter((pid) => pid !== id));
+      } catch (err) {
+        alert("Error deleting post");
+      } finally {
+        setDeleting((prev) => prev.filter((pid) => pid !== id));
+      }
+    },
+    [fetchPosts]
+  );
 
-  // Bulk delete
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = useCallback(async () => {
     if (!window.confirm("Delete all selected posts?")) return;
     setBulkDeleting(true);
     try {
-      await Promise.all(
-        selectedPosts.map((id) =>
-          fetch(`/api/posts?id=${id}`, { method: "DELETE" })
-        )
+      const deletePromises = selectedPosts.map((id) =>
+        fetch(`/api/posts?id=${id}`, { method: "DELETE" })
       );
-      setPosts((prev) => prev.filter((p) => !selectedPosts.includes(p.id)));
+
+      const results = await Promise.allSettled(deletePromises);
+
+      const failedDeletes = results.filter((r) => r.status === "rejected");
+      if (failedDeletes.length > 0) {
+        console.error("Some posts failed to delete:", failedDeletes);
+        alert("Error deleting some posts. Check the console for details.");
+      }
+
+      await fetchPosts();
       setSelectedPosts([]);
     } catch (err) {
-      alert("Error deleting some posts");
+      alert("An unexpected error occurred during bulk delete.");
     } finally {
       setBulkDeleting(false);
     }
-  };
+  }, [selectedPosts, fetchPosts]);
 
   const getBadgeColor = (status: string) => {
     switch (status) {
@@ -353,7 +363,7 @@ export default function ContentManagement() {
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-[var(--border-color)]">
-              <thead className="bg-[var(--background)]/50">
+              <thead className="bg-[var(--background-alt)]">
                 <tr>
                   <th scope="col" className="px-6 py-3 text-left">
                     <input
@@ -404,198 +414,102 @@ export default function ContentManagement() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-[var(--background)] divide-y divide-[var(--border-color)]">
-                {filteredPosts.length === 0 ? (
-                  <tr>
-                    <td colSpan={7} className="px-6 py-12 text-center">
-                      <div className="flex flex-col items-center justify-center space-y-2">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-10 w-10 text-[var(--text-light)]"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
+              <tbody className="divide-y divide-[var(--border-color)]">
+                {filteredPosts.map((post) => (
+                  <tr
+                    key={post.id}
+                    className={`transition-colors duration-200 ${
+                      selectedPosts.includes(post.id)
+                        ? "bg-[var(--accent-light)]"
+                        : "hover:bg-[var(--accent-light)]"
+                    }`}
+                  >
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <input
+                        type="checkbox"
+                        checked={selectedPosts.includes(post.id)}
+                        onChange={() => togglePostSelection(post.id)}
+                        className="rounded border-gray-300 text-[var(--primary-color)] focus:ring-[var(--primary-color)] h-4 w-4"
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-start">
+                        <div className="text-sm text-[var(--text-color)] line-clamp-2">
+                          {post.content}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        {getPlatformIcon(post.platform)}
+                        <span className="ml-2 text-sm text-[var(--text-color)]">
+                          {post.platform}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getBadgeColor(
+                          "Published" // Hardcoded as we don't have status
+                        )}`}
+                      >
+                        Published
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
+                      {new Date(post.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-color)]">
+                      -
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex justify-end space-x-2">
+                        <button
+                          className="text-[var(--primary-color)] opacity-50 cursor-not-allowed"
+                          disabled
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1}
-                            d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m6.75 12l-3-3m0 0l-3 3m3-3v6m-1.5-15H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
-                          />
-                        </svg>
-                        <h3 className="font-medium text-[var(--text-color)]">
-                          No content found
-                        </h3>
-                        <p className="text-sm text-[var(--text-light)]">
-                          Try adjusting your search or filters
-                        </p>
-                        <Button
-                          size="sm"
-                          color="primary"
-                          className="mt-2"
-                          onClick={() => {
-                            setSearchTerm("");
-                            setStatusFilter("All");
-                            setPlatformFilter("All");
-                          }}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                          </svg>
+                        </button>
+                        <button
+                          className="text-red-500 hover:text-red-700"
+                          onClick={() => handleDelete(post.id)}
+                          disabled={deleting.includes(post.id)}
                         >
-                          Clear Filters
-                        </Button>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1.5}
+                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                            />
+                          </svg>
+                        </button>
                       </div>
                     </td>
                   </tr>
-                ) : (
-                  filteredPosts.map((post) => (
-                    <tr
-                      key={post.id}
-                      className="hover:bg-[var(--accent-light)] transition-colors"
-                    >
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <input
-                          type="checkbox"
-                          checked={selectedPosts.includes(post.id)}
-                          onChange={() => togglePostSelection(post.id)}
-                          className="rounded border-gray-300 text-[var(--primary-color)] focus:ring-[var(--primary-color)] h-4 w-4"
-                        />
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-start">
-                          <div className="text-sm text-[var(--text-color)] line-clamp-2">
-                            {post.content}
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center">
-                          {getPlatformIcon(post.platform)}
-                          <span className="ml-2 text-sm text-[var(--text-color)]">
-                            {post.platform}
-                          </span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span
-                          className={`inline-flex rounded-full px-2 text-xs font-semibold leading-5 ${getBadgeColor(
-                            post.status
-                          )}`}
-                        >
-                          {post.status}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-light)]">
-                        {post.date}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-color)]">
-                        {post.status === "Published" ? post.engagement : "-"}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div className="flex justify-end space-x-2">
-                          <button
-                            className="text-[var(--primary-color)] opacity-50 cursor-not-allowed"
-                            disabled
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                              />
-                            </svg>
-                          </button>
-                          <button
-                            className="text-red-500 hover:text-red-700"
-                            onClick={() => handleDelete(post.id)}
-                            disabled={deleting.includes(post.id)}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="h-5 w-5"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={1.5}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-                )}
+                ))}
               </tbody>
             </table>
           </div>
-
-          {filteredPosts.length > 0 && (
-            <div className="px-6 py-3 flex items-center justify-between border-t border-[var(--border-color)]">
-              <div className="text-sm text-[var(--text-light)]">
-                Showing{" "}
-                <span className="font-medium text-[var(--text-color)]">
-                  {filteredPosts.length}
-                </span>{" "}
-                of{" "}
-                <span className="font-medium text-[var(--text-color)]">
-                  {posts.length}
-                </span>{" "}
-                posts
-              </div>
-              <div className="flex items-center space-x-2">
-                <button
-                  className="px-2 py-1 border border-[var(--border-color)] rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-                <span className="px-3 py-1 bg-[var(--primary-color)] text-white rounded-md text-sm">
-                  1
-                </span>
-                <button
-                  className="px-2 py-1 border border-[var(--border-color)] rounded-md text-sm disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-4 w-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
         </div>
       </main>
     </div>
