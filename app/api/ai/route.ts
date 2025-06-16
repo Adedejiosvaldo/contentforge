@@ -1,9 +1,26 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust path as needed
+import { prisma } from "@/app/prisma"; // Corrected prisma import
+
+// Define a type for the user interest if not already defined elsewhere
+interface UserInterest {
+  interest: string;
+  // Add other properties of UserInterest if any
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt, socialMediaPlatforms } = await request.json(); // Changed to socialMediaPlatforms (plural)
+    const session = await getServerSession(authOptions);
+
+    // Assuming you have extended the Session type in a .d.ts file to include user.id
+    if (!session || !session.user || !(session.user as any).id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    const userId = (session.user as any).id as string; // Type assertion for id
+
+    const { prompt, socialMediaPlatforms } = await request.json();
 
     if (
       !prompt ||
@@ -20,6 +37,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Fetch user details from Prisma
+    const userDetails = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        interests: true, // Assuming you have a relation named 'interests'
+      },
+    });
+
+    if (!userDetails) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    const {
+      company,
+      role,
+      industry,
+      niche,
+      audienceDesc,
+      keywords,
+      bio,
+      interests: userInterestsDb,
+    } = userDetails;
+    const interests =
+      userInterestsDb?.map((i: UserInterest) => i.interest).join(", ") ||
+      "general topics";
+
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
@@ -34,26 +77,45 @@ export async function POST(request: NextRequest) {
     const generatedPosts: Record<string, string> = {};
 
     for (const platform of socialMediaPlatforms) {
-      const fullPrompt = `Generate a social media post for ${platform} based on the following input: "${prompt}"`;
+      // Construct the detailed prompt
+      let detailedPrompt = `You are an expert social media content creator.
+      Your task is to generate a compelling post for the ${platform} platform based on the following input: "${prompt}".
+
+      Consider the following user profile for tone, style, and content:
+      - Company: ${company || "Not specified"}
+      - Role: ${role || "Not specified"}
+      - Industry: ${industry || "Not specified"}
+      - Niche: ${niche || "Not specified"}
+      - Target Audience: ${audienceDesc || "General audience"}
+      - Key Keywords to consider: ${keywords || "Not specified"}
+      - User Bio/Brand Voice: ${bio || "Professional and engaging"}
+      - User Interests: ${interests}
+
+      The post should:
+      1. Be highly engaging and optimized to gain traction and likes.
+      2. Sound human, authentic, and relatable to the target audience.
+      3. Include relevant and effective hashtags to maximize reach.
+      4. Be tailored specifically for the ${platform} platform, considering its best practices (e.g., character limits for Twitter, visual focus for Instagram).
+
+      Generate the post content now:
+      `;
+
       try {
-        const result = await model.generateContent(fullPrompt);
+        const result = await model.generateContent(detailedPrompt);
         const response = result.response;
         const text = response.text();
         generatedPosts[platform] = text;
       } catch (error) {
         console.error(`Error generating content for ${platform}:`, error);
-        // Optionally, you could add a specific error message for this platform
         generatedPosts[platform] =
           "Failed to generate content for this platform.";
       }
     }
 
-    return NextResponse.json({ generatedPosts }); // Return a map of posts
+    return NextResponse.json({ generatedPosts });
   } catch (error) {
     console.error("Error generating AI posts:", error);
-    // Ensure this is a general catch for unexpected errors
     if (error instanceof SyntaxError) {
-      // For example, if request.json() fails
       return NextResponse.json(
         { error: "Invalid request body" },
         { status: 400 }
