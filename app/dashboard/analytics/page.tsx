@@ -156,13 +156,13 @@ export default function Analytics() {
       <DashboardHeader />
       <main className="flex-1 p-6 lg:p-10 relative">
         {/* Full glassy overlay for analytics page, but keep DashboardHeader visible */}
-        <div className="absolute inset-0 z-30 flex items-center justify-center backdrop-blur-xl bg-white/30 dark:bg-black/30">
+        <div className="absolute inset-0  flex items-center justify-center backdrop-blur-xl bg-white/30 dark:bg-black/30">
           <div
             className="flex flex-col items-center justify-center p-10 rounded-2xl shadow-2xl bg-white/40 dark:bg-black/40 border border-white/30 dark:border-black/30 max-w-lg mx-auto"
             style={{ backdropFilter: "blur(18px)" }}
           >
             <svg
-              className="h-20 w-20 text-blue-400 mb-6 animate-bounce"
+              className="h-20 w-20 text-blue-400 mb-6 "
               fill="none"
               stroke="currentColor"
               strokeWidth="2"

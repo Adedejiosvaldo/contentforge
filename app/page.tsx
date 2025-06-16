@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-[var(--accent-light)] via-[var(--accent-color)] to-[var(--accent-light)] font-sans overflow-hidden">
       {/* Header with glassmorphism effect */}
-      <header className="w-full flex items-center justify-between px-6 md:px-20 py-4 glass sticky top-0 z-10 border-b border-[var(--border-color)] shadow-sm">
+      <header className="w-full flex flex-col md:flex-row items-center justify-between px-4 md:px-20 py-4 glass sticky top-0 z-10 border-b border-[var(--border-color)] shadow-sm gap-4 md:gap-0">
         <div className="flex items-center gap-2 font-medium text-lg">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--foreground)] text-[var(--background)] shadow-sm">
             <Image
@@ -40,9 +40,9 @@ export default function Home() {
             Help
           </a>
         </nav>
-        <div className="flex items-center gap-3">
-          <Link href="/signup">
-            <button className="ripple-container px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
+        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 w-full md:w-auto">
+          <Link href="/signup" className="w-full md:w-auto">
+            <button className="w-full md:w-auto ripple-container px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
               Get Started
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -61,8 +61,8 @@ export default function Home() {
               </svg>
             </button>
           </Link>
-          <Link href="/login" className="hidden md:inline-block">
-            <button className=" px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
+          <Link href="/login" className="w-full md:w-auto">
+            <button className="w-full md:w-auto px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
               Sign In{" "}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -86,28 +86,28 @@ export default function Home() {
 
       {/* Hero Section with PlantImage */}
       <main className="flex-1 flex flex-col items-center">
-        <section className="w-full py-24 md:py-32 px-4 relative overflow-hidden">
+        <section className="w-full py-16 md:py-24 px-2 md:px-4 relative overflow-hidden">
           {/* Enhanced gradient background effect */}
           <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--accent-light)]/40 via-[var(--accent-color)]/30 to-[var(--accent-light)]/40"></div>
 
           {/* Animated gradient blobs */}
-          <div className="absolute top-1/4 left-1/3 w-[600px] h-[600px] bg-[var(--accent-light)]/40 rounded-full filter blur-[120px] -z-10 animate-pulse-slow"></div>
-          <div className="absolute top-1/2 right-1/4 w-[500px] h-[500px] bg-[var(--accent-color)]/40 rounded-full filter blur-[100px] -z-10 animate-float"></div>
-          <div className="absolute bottom-1/3 left-1/4 w-[300px] h-[300px] bg-[var(--primary-color)]/30 rounded-full filter blur-[80px] -z-10 animate-float-delay"></div>
+          <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--accent-light)]/40 rounded-full filter blur-[80px] md:blur-[120px] -z-10 animate-pulse-slow"></div>
+          <div className="absolute top-1/2 right-1/4 w-[200px] md:w-[500px] h-[200px] md:h-[500px] bg-[var(--accent-color)]/40 rounded-full filter blur-[60px] md:blur-[100px] -z-10 animate-float"></div>
+          <div className="absolute bottom-1/3 left-1/4 w-[120px] md:w-[300px] h-[120px] md:h-[300px] bg-[var(--primary-color)]/30 rounded-full filter blur-[40px] md:blur-[80px] -z-10 animate-float-delay"></div>
 
           {/* Grid pattern overlay */}
           <div className="absolute inset-0 bg-grid-pattern opacity-[0.03] -z-10"></div>
 
           <div className="container mx-auto max-w-6xl relative z-10">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 md:gap-12">
               {/* Hero text content */}
-              <div className="md:w-1/2 text-center md:text-left">
-                <div className="glass hero-glass-container backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-lg border border-[var(--border-color)] p-10 md:p-12 relative overflow-hidden">
+              <div className="w-full md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+                <div className="glass hero-glass-container backdrop-blur-md bg-[var(--background)]/10 rounded-3xl shadow-lg border border-[var(--border-color)] p-6 md:p-10 lg:p-12 relative overflow-hidden">
                   {/* Decorative elements */}
                   <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[var(--primary-color)]/30 to-transparent"></div>
                   <div className="absolute -top-24 -right-24 w-48 h-48 bg-[var(--primary-color)]/10 rounded-full filter blur-[80px] -z-10"></div>
 
-                  <h1 className="text-4xl md:text-6xl font-extrabold mb-8 leading-tight text-[var(--text-color)] relative">
+                  <h1 className="text-3xl md:text-5xl lg:text-6xl font-extrabold mb-6 md:mb-8 leading-tight text-[var(--text-color)] relative">
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-[var(--text-color)] via-[var(--primary-color)] to-[var(--text-color)]">
                       Create Engaging Content
                     </span>
@@ -126,14 +126,14 @@ export default function Home() {
                       </svg>
                     </span>
                   </h1>
-                  <p className="text-lg md:text-xl text-[var(--text-light)] mb-12 max-w-xl">
+                  <p className="text-base md:text-lg lg:text-xl text-[var(--text-light)] mb-8 md:mb-12 max-w-xl mx-auto md:mx-0">
                     Effortlessly craft compelling posts for Instagram, Twitter,
                     LinkedIn, and more. Let AI enhance your social media
                     presence with engaging, platform-optimized content.
                   </p>
-                  <div className="flex flex-col sm:flex-row gap-4 items-center justify-center md:justify-start">
-                    <Link href="/signup">
-                      <button className="ripple-container px-6 py-3 bg-[var(--primary-color)] text-white font-medium rounded-full hover:bg-[var(--primary-hover)] transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row gap-3 md:gap-4 items-center justify-center md:justify-start">
+                    <Link href="/signup" className="w-full sm:w-auto">
+                      <button className="w-full sm:w-auto ripple-container px-6 py-3 bg-[var(--primary-color)] text-white font-medium rounded-full hover:bg-[var(--primary-hover)] transition-all duration-300 shadow-md hover:shadow-lg flex items-center gap-2">
                         Start Creating
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -174,8 +174,8 @@ export default function Home() {
               </div>
 
               {/* Dashboard UI mockup */}
-              <div className="md:w-1/2 flex justify-center">
-                <div className="w-full max-w-md">
+              <div className="w-full md:w-1/2 flex justify-center">
+                <div className="w-full max-w-xs sm:max-w-md">
                   <DashboardMockup />
                 </div>
               </div>

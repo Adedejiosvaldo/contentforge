@@ -167,7 +167,7 @@ export default function ContentManagement() {
             </svg>
           </div>
         );
-      case "Linkedin":
+      case "LinkedIn":
         return (
           <div className="w-6 h-6 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center">
             <svg
