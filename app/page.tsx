@@ -3,13 +3,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import DashboardMockup from "./components/DashboardMockup";
+import { useState } from "react";
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-[var(--accent-light)] via-[var(--accent-color)] to-[var(--accent-light)] font-sans overflow-hidden">
       {/* Header with glassmorphism effect */}
       <header className="w-full flex flex-col md:flex-row items-center justify-between px-4 md:px-20 py-4 glass sticky top-0 z-10 border-b border-[var(--border-color)] shadow-sm gap-4 md:gap-0">
-        <div className="flex items-center gap-2 font-medium text-lg">
+        <div className="flex items-center gap-2 font-medium text-lg w-full md:w-auto justify-between md:justify-start">
           <div className="flex items-center justify-center w-8 h-8 rounded-full bg-[var(--foreground)] text-[var(--background)] shadow-sm">
             <Image
               src="/contentcraft-logo.svg"
@@ -19,7 +21,29 @@ export default function Home() {
             />
           </div>
           <span className="font-semibold">ContentCraft</span>
+          {/* Hamburger menu button for mobile */}
+          <button
+            className="md:hidden ml-auto p-2 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+            aria-label="Open navigation menu"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 text-[var(--text-color)]"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
+          </button>
         </div>
+        {/* Desktop nav */}
         <nav className="hidden md:flex items-center gap-10 text-sm font-medium">
           <a
             href="#features"
@@ -40,7 +64,8 @@ export default function Home() {
             Help
           </a>
         </nav>
-        <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 w-full md:w-auto">
+        {/* Desktop actions */}
+        <div className="hidden md:flex items-center gap-3 w-full md:w-auto">
           <Link href="/signup" className="w-full md:w-auto">
             <button className="w-full md:w-auto ripple-container px-5 py-2.5 bg-[var(--foreground)] text-[var(--background)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg transform hover:scale-105">
               Get Started
@@ -82,13 +107,14 @@ export default function Home() {
             </button>
           </Link>
         </div>
+        {/* ...existing code... */}
       </header>
 
       {/* Hero Section with PlantImage */}
       <main className="flex-1 flex flex-col items-center">
         <section className="w-full py-16 md:py-24 px-2 md:px-4 relative overflow-hidden">
           {/* Enhanced gradient background effect */}
-          <div className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--accent-light)]/40 via-[var(--accent-color)]/30 to-[var(--accent-light)]/40"></div>
+          <div className="absolute inset-0  bg-gradient-to-br from-[var(--accent-light)]/40 via-[var(--accent-color)]/30 to-[var(--accent-light)]/40"></div>
 
           {/* Animated gradient blobs */}
           <div className="absolute top-1/4 left-1/3 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[var(--accent-light)]/40 rounded-full filter blur-[80px] md:blur-[120px] -z-10 animate-pulse-slow"></div>
@@ -1053,6 +1079,100 @@ export default function Home() {
           <p>© 2024 ContentCraft. All rights reserved.</p>
         </div>
       </footer>
+      {/* Mobile menu overlay moved to end of component for proper stacking */}
+      {mobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex flex-col"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div className="absolute z-[9999] inset-0 bg-black/40 backdrop-blur-sm transition-opacity" />
+          <nav
+            className="relative shadow-xl z-[9999] rounded-b-2xl mx-2 mt-2 p-6 flex flex-col gap-4 animate-slideDown"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              className="absolute top-3 right-3 p-2 rounded focus:outline-none focus:ring-2 focus:ring-[var(--primary-color)]"
+              onClick={() => setMobileMenuOpen(false)}
+              aria-label="Close menu"
+            >
+              <svg
+                className="w-7 h-7 text-white"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+            <a
+              href="#features"
+              className="py-3 px-4 text-white rounded hover:bg-blue-50 text-base font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Features
+            </a>
+            <a
+              href="#pricing"
+              className="py-3 px-4 rounded hover:bg-blue-50 text-white text-base font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Pricing
+            </a>
+            <a
+              href="#help"
+              className="py-3 px-4 rounded hover:bg-blue-50 text-white text-base font-medium"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              Help
+            </a>
+            <Link href="/signup" className="w-full">
+              <button className="w-full mt-2  px-5 py-2.5  flex items-center gap-1 shadow-md hover:shadow-lg">
+                Get Started
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="ml-1"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </Link>
+            <Link href="/login" className="w-full">
+              <button className="w-full px-5 py-2.5 border border-[var(--border-color)] text-sm font-medium rounded-full hover:opacity-90 transition-all duration-300 flex items-center gap-1 shadow-md hover:shadow-lg mt-2">
+                Sign In
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="ml-1"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12"></line>
+                  <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+              </button>
+            </Link>
+          </nav>
+        </div>
+      )}
     </div>
   );
 }
