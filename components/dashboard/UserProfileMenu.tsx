@@ -74,7 +74,7 @@ export default function UserProfileMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-64 bg-[var(--background)] rounded-xl shadow-lg border border-[var(--border-color)] py-2 z-50">
+        <div className="absolute z-11 right-0 mt-2 w-64 bg-[var(--background)] rounded-xl shadow-lg border border-[var(--border-color)] py-2 z-50">
           <div className="px-4 py-3 border-b border-[var(--border-color)]">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden border border-[var(--border-color)]">
