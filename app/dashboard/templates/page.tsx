@@ -10,79 +10,156 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 const TEMPLATES = [
   {
     id: "template1",
-    name: "Product Launch Announcement",
-    description: "Announce a new product or service across platforms",
-    category: "Marketing",
-    platforms: ["Twitter", "Facebook", "LinkedIn"],
-    popularity: 87,
+    name: "Problem-Agitate-Solve (PAS)",
+    description:
+      "Identify a pain point, explore its impact, and present your solution.",
+    category: "Conversion",
+    platforms: ["All Platforms"],
+    prompt: `**[Identify a Common Problem Your Audience Faces]**
+Is this you? [Describe the problem in relatable terms]. It's frustrating, right?
+
+**[Agitate the Problem]**
+The real issue is [explain the deeper consequences of the problem]. It costs you time, money, or peace of mind.
+
+**[Present Your Solution]**
+What if there was a better way? Our [Product/Service] is designed to [explain the key benefit that solves the problem].
+
+Stop struggling. Click the link to learn more!
+
+#[YourIndustry] #[Problem] #[Solution]`,
   },
   {
     id: "template2",
-    name: "Weekly Tips Series",
-    description: "Share industry tips and advice in a consistent weekly format",
-    category: "Education",
-    platforms: ["Instagram", "LinkedIn", "Blog"],
-    popularity: 65,
+    name: "Before-After-Bridge",
+    description:
+      "Show the transformation your product provides, from the current state to the desired one.",
+    category: "Conversion",
+    platforms: ["Instagram", "Facebook", "LinkedIn"],
+    prompt: `**Before:** [Describe the frustrating "before" state].
+
+**After:** Imagine a world where [describe the ideal "after" state].
+
+**Bridge:** You can get there. Our [Product/Service] is the bridge. It helps you [mention 1-2 key features/benefits].
+
+Ready for your 'after'? Visit our site.
+
+#[Transformation] #[YourBrand] #[Success]`,
   },
   {
     id: "template3",
-    name: "Customer Testimonial",
-    description: "Highlight positive feedback from your customers",
-    category: "Social Proof",
-    platforms: ["Facebook", "Instagram", "Twitter"],
-    popularity: 92,
+    name: "Feature-Advantage-Benefit (FAB)",
+    description:
+      "Clearly articulate your value by connecting features to real-world benefits for the user.",
+    category: "Value & Education",
+    platforms: ["LinkedIn", "Blog", "Facebook"],
+    prompt: `You asked, we listened! Our new [Feature Name] is here.
+
+**Feature:** [Describe the feature, e.g., 'one-click scheduling'].
+**Advantage:** This means you can [describe the advantage, e.g., 'save time planning content'].
+**Benefit:** So you can focus on [describe the ultimate benefit, e.g., 'growing your business'].
+
+Check it out today!
+
+#[NewFeature] #[ProductUpdate] #[YourIndustry]`,
   },
   {
     id: "template4",
-    name: "Special Offer/Discount",
-    description: "Promote a limited-time offer or discount",
-    category: "Sales",
-    platforms: ["All Platforms"],
-    popularity: 78,
+    name: "The 'How-To' Micro-Tutorial",
+    description:
+      "Provide immediate value by teaching your audience how to solve a specific, small problem.",
+    category: "Value & Education",
+    platforms: ["Instagram", "Blog", "Twitter"],
+    prompt: `Want to [achieve a specific outcome]? Here’s how in 3 simple steps:
+
+1. **[Step 1]** - [Briefly explain the first action].
+2. **[Step 2]** - [Briefly explain the second action].
+3. **[Step 3]** - [Briefly explain the final action].
+
+And that's it! You've just [restate the achievement].
+
+What topic should we cover next? Let us know below! 👇
+
+#[HowTo] #[TipsAndTricks] #[YourNiche]`,
   },
   {
     id: "template5",
-    name: "Industry News Roundup",
-    description: "Share and comment on relevant industry news and trends",
-    category: "Thought Leadership",
+    name: "Myth vs. Fact",
+    description:
+      "Bust a common industry myth and establish your brand as a knowledgeable authority.",
+    category: "Brand Building",
     platforms: ["LinkedIn", "Twitter", "Blog"],
-    popularity: 59,
+    prompt: `**Myth:** [State a common misconception in your industry].
+
+**Fact:** The truth is actually [state the reality, providing a brief explanation or data point].
+
+Why does this matter? Because [explain the negative impact of the myth or the positive impact of the truth].
+
+Follow us for more industry truths!
+
+#[MythBusting] #[IndustryInsights] #[YourBrandName]`,
   },
   {
     id: "template6",
-    name: "Behind the Scenes",
-    description: "Share insights into your company culture and operations",
-    category: "Brand Awareness",
-    platforms: ["Instagram", "Facebook"],
-    popularity: 74,
+    name: "Limited-Time Offer / Urgency",
+    description:
+      "Drive immediate action with a time-sensitive promotion or special offer.",
+    category: "Conversion",
+    platforms: ["All Platforms"],
+    prompt: `🚨 **FLASH SALE!** 🚨
+
+For the next 48 hours, get [Percentage/Amount Off] our [Product/Service]!
+
+This is your chance to [mention a key benefit]. Don't wait – this offer disappears on [End Date].
+
+Claim your discount now! [Link in Bio]
+
+#[FlashSale] #[LimitedTimeOffer] #[YourBrand]`,
   },
   {
     id: "template7",
-    name: "How-to Tutorial",
-    description: "Step-by-step instructions for using your product or service",
-    category: "Education",
-    platforms: ["Blog", "Instagram", "LinkedIn"],
-    popularity: 83,
+    name: "Community Question / Engagement",
+    description:
+      "Spark conversation and get valuable insights by asking your audience a question.",
+    category: "Brand Building",
+    platforms: ["Facebook", "Twitter", "Instagram"],
+    prompt: `We need your help to decide!
+
+What's the biggest challenge you face when it comes to [Your Industry/Topic]?
+
+A) [Option A]
+B) [Option B]
+C) [Option C]
+D) Something else? (Tell us in the comments!)
+
+Your feedback helps us create better [Products/Content] for you. Let's hear it! 👇
+
+#[Community] #[Feedback] #[YourIndustry]`,
   },
   {
     id: "template8",
-    name: "Event Promotion",
-    description: "Promote an upcoming event or webinar",
-    category: "Marketing",
-    platforms: ["All Platforms"],
-    popularity: 68,
+    name: "Customer Spotlight / Testimonial",
+    description:
+      "Build trust and credibility by showcasing a real customer's success story.",
+    category: "Brand Building",
+    platforms: ["LinkedIn", "Instagram", "Facebook"],
+    prompt: `We're so proud to feature one of our amazing customers, [Customer Name]!
+
+They were struggling with [the customer's problem]. Here's what they had to say after using [Your Product]:
+
+"[Insert a powerful quote from the customer's testimonial]."
+
+We love helping our customers achieve [the positive outcome]. Thank you for trusting us, [Customer Name]!
+
+#[CustomerSuccess] #[Testimonial] #[YourBrand]`,
   },
 ];
 
 // Template categories
 const CATEGORIES = [
   "All Categories",
-  "Marketing",
-  "Education",
-  "Sales",
-  "Social Proof",
-  "Thought Leadership",
-  "Brand Awareness",
+  "Conversion",
+  "Brand Building",
+  "Value & Education",
 ];
 
 export default function Templates() {
@@ -222,7 +299,7 @@ export default function Templates() {
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
-      case "Marketing":
+      case "Conversion":
         return (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -235,11 +312,11 @@ export default function Templates() {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={1.5}
-              d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
         );
-      case "Education":
+      case "Value & Education":
         return (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -258,58 +335,7 @@ export default function Templates() {
             />
           </svg>
         );
-      case "Sales":
-        return (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-        );
-      case "Social Proof":
-        return (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-            />
-          </svg>
-        );
-      case "Thought Leadership":
-        return (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M9.663 17h4.673M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
-            />
-          </svg>
-        );
-      case "Brand Awareness":
+      case "Brand Building":
         return (
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -538,29 +564,15 @@ export default function Templates() {
                         </div>
                       )}
                     </div>
-
-                    <div className="flex items-center text-xs text-[var(--text-light)]">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3.5 w-3.5 mr-1"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905a3.61 3.61 0 01-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"
-                        />
-                      </svg>
-                      {template.popularity}% popular
-                    </div>
                   </div>
                 </div>
 
                 <div className="border-t border-[var(--border-color)] p-4">
-                  <Link href={`/dashboard/create?template=${template.id}`}>
+                  <Link
+                    href={`/dashboard/create?prompt=${encodeURIComponent(
+                      template.prompt
+                    )}`}
+                  >
                     <Button color="primary" className="w-full">
                       Use Template
                     </Button>

@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Button, Textarea } from "@heroui/react";
 import { z } from "zod";
 import { useForm, Controller } from "react-hook-form"; // Import useForm and Controller
@@ -29,8 +30,9 @@ const contentSchema = z.object({
 // Infer the type from the schema
 type ContentFormData = z.infer<typeof contentSchema>;
 
-export default function CreateContent() {
+function CreateContentForm() {
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("post");
   const [generatedContent, setGeneratedContent] = useState<
     Record<string, string>
@@ -58,6 +60,15 @@ export default function CreateContent() {
     },
     mode: "onChange", // Validate on change for immediate feedback
   });
+
+  useEffect(() => {
+    const promptFromTemplate = searchParams.get("prompt");
+    if (promptFromTemplate) {
+      setValue("prompt", decodeURIComponent(promptFromTemplate), {
+        shouldValidate: true,
+      });
+    }
+  }, [searchParams, setValue]);
 
   const currentPlatforms = watch("platforms"); // Watch platform changes
   const currentPrompt = watch("prompt"); // Watch prompt changes
@@ -731,5 +742,13 @@ export default function CreateContent() {
         </form>
       </main>
     </div>
+  );
+}
+
+export default function CreateContent() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <CreateContentForm />
+    </Suspense>
   );
 }
