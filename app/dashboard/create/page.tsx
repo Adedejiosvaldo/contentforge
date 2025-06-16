@@ -1,53 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { Button, Textarea } from "@heroui/react"; // Added Textarea
+import { Button, Textarea } from "@heroui/react";
+import { z } from "zod";
+import { useForm, Controller } from "react-hook-form"; // Import useForm and Controller
+import { zodResolver } from "@hookform/resolvers/zod"; // Import zodResolver
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import PostScheduling from "@/components/dashboard/PostScheduling";
+
+// Define Zod schema for validation (remains the same)
+const contentSchema = z.object({
+  prompt: z.string().min(1, { message: "Prompt cannot be empty." }),
+  platforms: z
+    .object({
+      twitter: z.boolean(),
+      facebook: z.boolean(),
+      instagram: z.boolean(),
+      linkedin: z.boolean(),
+    })
+    .refine((data) => Object.values(data).some((val) => val === true), {
+      message: "Please select at least one platform.",
+      path: ["platforms"],
+    }),
+});
+
+// Infer the type from the schema
+type ContentFormData = z.infer<typeof contentSchema>;
 
 export default function CreateContent() {
   const { data: session } = useSession();
   const [activeTab, setActiveTab] = useState("post");
-  const [prompt, setPrompt] = useState("");
-  const [promptError, setPromptError] = useState(""); // New state for prompt error
   const [generatedContent, setGeneratedContent] = useState<
     Record<string, string>
   >({});
   const [isGenerating, setIsGenerating] = useState(false);
-  const [platforms, setPlatforms] = useState({
-    twitter: true,
-    facebook: true,
-    instagram: true,
-    linkedin: false,
+
+  const {
+    register,
+    handleSubmit,
+    control, // For Controller
+    watch, // To watch form values
+    setValue, // To set form values
+    formState: { errors, isValid, isSubmitting },
+  } = useForm<ContentFormData>({
+    resolver: zodResolver(contentSchema),
+    defaultValues: {
+      prompt: "",
+      platforms: {
+        twitter: true,
+        facebook: false,
+        instagram: false,
+        linkedin: true,
+      },
+    },
+    mode: "onChange", // Validate on change for immediate feedback
   });
 
-  const validatePrompt = (): boolean => {
-    if (!prompt.trim()) {
-      setPromptError("Prompt cannot be empty.");
-      return false;
-    }
-    setPromptError("");
-    return true;
-  };
+  const currentPlatforms = watch("platforms"); // Watch platform changes
+  const currentPrompt = watch("prompt"); // Watch prompt changes
 
-  const handleGenerate = async () => {
-    if (!validatePrompt()) return;
-
+  const onSubmit = async (data: ContentFormData) => {
     setIsGenerating(true);
-    setGeneratedContent({}); // Clear previous content
+    setGeneratedContent({});
 
-    const selectedPlatforms = Object.entries(platforms)
+    const selectedPlatforms = Object.entries(data.platforms)
       .filter(([_, isSelected]) => isSelected)
       .map(([platform]) => platform);
-
-    if (selectedPlatforms.length === 0) {
-      // TODO: Show a user-facing message (e.g., toast notification)
-      console.warn("No platforms selected for content generation.");
-      setIsGenerating(false);
-      return;
-    }
 
     try {
       const response = await fetch("/api/ai", {
@@ -55,49 +75,36 @@ export default function CreateContent() {
         headers: {
           "Content-Type": "application/json",
         },
-        // Send all selected platforms to the API
         body: JSON.stringify({
-          prompt,
+          prompt: data.prompt,
           socialMediaPlatforms: selectedPlatforms,
         }),
       });
 
       if (!response.ok) {
-        // TODO: Show a user-facing message (e.g., toast notification)
         console.error("API Error:", await response.text());
-        // Potentially set an error state here to display to the user
         setIsGenerating(false);
         return;
       }
 
-      const data = await response.json();
-
-      // The API now returns a map of generated posts
-      setGeneratedContent(data.generatedPosts || {});
+      const responseData = await response.json();
+      setGeneratedContent(responseData.generatedPosts || {});
     } catch (error) {
-      // TODO: Show a user-facing message (e.g., toast notification)
       console.error("Failed to generate content:", error);
-      // Potentially set an error state here to display to the user
     } finally {
       setIsGenerating(false);
     }
   };
 
-  const togglePlatform = (platform: string) => {
-    setPlatforms((prev) => ({
-      ...prev,
-      [platform]: !prev[platform as keyof typeof platforms],
-    }));
+  const handlePlatformToggle = (
+    platformName: keyof ContentFormData["platforms"]
+  ) => {
+    setValue(`platforms.${platformName}`, !currentPlatforms[platformName], {
+      shouldValidate: true, // Trigger validation for platforms
+    });
   };
 
-  const handlePromptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPrompt(e.target.value);
-    if (promptError) {
-      setPromptError("");
-    }
-  };
-
-  const platformCount = Object.values(platforms).filter(Boolean).length;
+  const platformCount = Object.values(currentPlatforms).filter(Boolean).length;
 
   return (
     <div className="min-h-screen flex flex-col bg-[var(--background)]">
@@ -123,7 +130,10 @@ export default function CreateContent() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="grid grid-cols-1 lg:grid-cols-3 gap-8"
+        >
           {/* Input Section */}
           <div className="lg:col-span-1">
             <div className="bg-[var(--background)] border border-[var(--border-color)] rounded-xl p-6">
@@ -139,44 +149,61 @@ export default function CreateContent() {
                 <Textarea
                   id="prompt"
                   rows={10}
-                  value={prompt}
-                  onChange={handlePromptChange} // Use new handler
+                  {...register("prompt")} // Register with react-hook-form
                   placeholder="Describe what you want to post about..."
                   className={`w-full text-sm ${
-                    promptError
+                    errors.prompt
                       ? "border-red-500 focus:border-red-500 ring-red-500"
-                      : ""
+                      : "border-[var(--border-color)] focus:border-[var(--primary-color)] focus:ring-[var(--primary-color)]"
                   }`}
-                  // color={promptError ? "danger" : "default"} // HeroUI specific error state if available
                 />
-                {promptError && (
-                  <p className="text-xs text-red-500 mt-1">{promptError}</p>
+                {errors.prompt && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.prompt.message}
+                  </p>
                 )}
               </div>
 
               <div className="mb-6">
-                <label className="block text-sm font-medium text-[var(--text-color)] mb-2">
+                <label
+                  className={`block text-sm font-medium text-[var(--text-color)] mb-2 ${
+                    errors.platforms ? "text-red-500" : ""
+                  }`}
+                >
                   Target Platforms ({platformCount})
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div
+                  className={`grid grid-cols-2 gap-3 ${
+                    errors.platforms
+                      ? "border border-red-500 rounded-md p-1"
+                      : ""
+                  }`}
+                >
                   {(
-                    Object.keys(platforms) as Array<keyof typeof platforms>
+                    Object.keys(currentPlatforms) as Array<
+                      keyof ContentFormData["platforms"]
+                    >
                   ).map((platformKey) => (
                     <Button
+                      type="button" // Prevent form submission
                       key={platformKey}
-                      variant={platforms[platformKey] ? "solid" : "ghost"}
-                      color={platforms[platformKey] ? "primary" : "default"}
-                      onClick={() => togglePlatform(platformKey)}
+                      variant={
+                        currentPlatforms[platformKey] ? "solid" : "ghost"
+                      }
+                      color={
+                        currentPlatforms[platformKey] ? "primary" : "default"
+                      }
+                      onClick={() => handlePlatformToggle(platformKey)}
                       className="flex items-center justify-start p-3 w-full text-sm"
                     >
                       <div
                         className={`w-4 h-4 rounded-full mr-2 flex-shrink-0 border ${
-                          platforms[platformKey]
+                          currentPlatforms[platformKey]
                             ? "bg-[var(--primary-color)] border-[var(--primary-color)]"
                             : "border-[var(--border-color)]"
                         }`}
                       >
-                        {platforms[platformKey] && (
+                        {currentPlatforms[platformKey] && (
                           <svg
                             className="text-white w-4 h-4"
                             fill="none"
@@ -196,6 +223,11 @@ export default function CreateContent() {
                     </Button>
                   ))}
                 </div>
+                {errors.platforms && (
+                  <p className="text-xs text-red-500 mt-1">
+                    {errors.platforms.message}
+                  </p>
+                )}
               </div>
 
               {/* Post Scheduling */}
@@ -254,11 +286,11 @@ export default function CreateContent() {
               </div>
 
               <Button
-                color="primary"
+                type="submit" // Ensure button submits the form
+                color={isValid ? "primary" : "default"}
                 className="w-full justify-center py-3 text-base font-semibold transition-colors"
-                onClick={handleGenerate}
-                disabled={isGenerating || !!promptError || platformCount === 0}
-                isLoading={isGenerating} // Changed loading to isLoading
+                disabled={isSubmitting || isGenerating} // Use RHF state
+                isLoading={isSubmitting || isGenerating} // Use RHF state
               >
                 Generate Content
               </Button>
@@ -301,9 +333,9 @@ export default function CreateContent() {
                     </p>
                   </div>
                 </div>
-              ) : prompt ? (
+              ) : currentPrompt ? (
                 <div className="space-y-6">
-                  {platforms.twitter && (
+                  {currentPlatforms.twitter && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#1DA1F2]/20 text-[#1DA1F2] flex items-center justify-center mr-2">
@@ -361,7 +393,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {platforms.facebook && (
+                  {currentPlatforms.facebook && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#4267B2]/20 text-[#4267B2] flex items-center justify-center mr-2">
@@ -419,7 +451,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {platforms.instagram && (
+                  {currentPlatforms.instagram && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FCAF45] via-[#E1306C] to-[#5851DB]/20 text-[#E1306C] flex items-center justify-center mr-2">
@@ -486,7 +518,7 @@ export default function CreateContent() {
                     </div>
                   )}
 
-                  {platforms.linkedin && (
+                  {currentPlatforms.linkedin && (
                     <div className="border border-[var(--border-color)] rounded-lg p-4">
                       <div className="flex items-center mb-3">
                         <div className="w-8 h-8 rounded-full bg-[#0077B5]/20 text-[#0077B5] flex items-center justify-center mr-2">
@@ -572,13 +604,13 @@ export default function CreateContent() {
                 </div>
               )}
 
-              {prompt && !isGenerating && (
+              {currentPrompt && !isGenerating && (
                 <div className="flex justify-between mt-6 pt-4 border-t border-[var(--border-color)]">
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={handleGenerate} // Assuming regenerate calls handleGenerate again
-                    disabled={isGenerating || !!promptError} // Disable if error or generating
+                    onClick={handleSubmit(onSubmit)} // Assuming regenerate calls handleSubmit again
+                    disabled={isSubmitting || isGenerating} // Disable if error or generating
                     className="text-[var(--text-light)] text-sm flex items-center"
                   >
                     <svg
@@ -604,7 +636,7 @@ export default function CreateContent() {
               )}
             </div>
           </div>
-        </div>
+        </form>
       </main>
     </div>
   );
