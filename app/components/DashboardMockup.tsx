@@ -333,7 +333,7 @@ export default function DashboardMockup() {
 
       {/* Floating action button */}
       <div
-        className={`absolute -bottom-6 right-6 bg-[var(--primary-color)] rounded-full h-12 w-12 flex items-center justify-center shadow-lg
+        className={`absolute -bottom-3 right-6 bg-[var(--primary-color)] rounded-full h-12 w-12 flex items-center justify-center shadow-lg
           transition-all duration-700 delay-600 ${
             animate ? "translate-y-0 opacity-100" : "translate-y-10 opacity-0"
           }`}

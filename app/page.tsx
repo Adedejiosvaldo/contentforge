@@ -161,25 +161,6 @@ export default function Home() {
                         </svg>
                       </button>
                     </Link>
-                    <a
-                      href="#demo"
-                      className="text-[var(--text-light)] hover:text-[var(--text-color)] transition-colors flex items-center gap-2"
-                    >
-                      See AI in Action
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path d="M5 12h14M12 5l7 7-7 7" />
-                      </svg>
-                    </a>
                   </div>
                 </div>
               </div>
@@ -841,24 +822,29 @@ export default function Home() {
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <button className="ripple-container px-7 py-4 bg-[var(--foreground)] text-[var(--background)] font-medium rounded-full hover:opacity-90 transition-all duration-300 shadow-md hover:shadow-lg transform hover:scale-105 flex items-center justify-center gap-2">
-                  Learn More
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                    <polyline points="12 5 19 12 12 19"></polyline>
-                  </svg>
+                  <a href="#features" className="flex items-center gap-2">
+                    Learn More
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <line x1="5" y1="12" x2="19" y2="12"></line>
+                      <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                  </a>
                 </button>
-                <button className="px-7 py-4 bg-transparent border border-[var(--foreground)]/30 text-[var(--foreground)] font-medium rounded-full hover:bg-[var(--foreground)]/10 transition-all duration-300 flex items-center justify-center gap-2">
-                  View Demo
+                <Link
+                  href="/signup"
+                  className="px-7 py-4 bg-transparent border border-[var(--foreground)]/30 text-[var(--foreground)] font-medium rounded-full hover:bg-[var(--foreground)]/10 transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  Try Demo
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -873,7 +859,7 @@ export default function Home() {
                     <circle cx="12" cy="12" r="10"></circle>
                     <polygon points="10 8 16 12 10 16 10 8"></polygon>
                   </svg>
-                </button>
+                </Link>
               </div>
 
               {/* Trust indicators */}
