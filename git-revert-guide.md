@@ -1,0 +1,87 @@
+@import "./styles/hero-effects.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-color: #000000;
+  --primary-hover: #333333;
+  --text-color: #2b2d42;
+  --text-light: #6c757d;
+  --border-color: #e9ecef;
+}
+
+/* :root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --text-color: #2b2d42;
+  --text-light: #6c757d;
+  --border-color: #e9ecef;
+} */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+    --primary-color: #4361ee;
+    --primary-hover: #3a56d4;
+    --text-color: #f8f9fa;
+    --text-light: #ced4da;
+    --border-color: #343a40;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: var(--font-cabin), Arial, Helvetica, sans-serif; /* Use CSS variable from next/font */
+}
+
+/* Input field styling for better visibility in all themes */
+input,
+textarea,
+select {
+  color: var(--text-color) !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--text-light);
+  opacity: 0.6;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg px-6 py-3 transition-all duration-300 shadow-md hover:shadow-lg transform hover:-translate-y-0.5;
+  }
+
+  .btn-secondary {
+    @apply bg-white hover:bg-gray-100 text-gray-800 font-semibold border border-gray-200 rounded-lg px-6 py-3 transition-all duration-300 shadow-sm hover:shadow-md transform hover:-translate-y-0.5;
+  }
+
+  .feature-card {
+    @apply bg-white rounded-xl shadow-lg p-6 transition-all duration-300 border border-transparent hover:border-blue-200 transform hover:-translate-y-1 hover:shadow-xl;
+  }
+
+  .animate-fadeIn {
+    animation: fadeIn 1s ease-in-out;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
