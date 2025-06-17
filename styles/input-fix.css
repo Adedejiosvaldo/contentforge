@@ -13,7 +13,7 @@ textarea::placeholder {
 } */
 
 /* More specific selectors for email, text and password inputs */
-input[type="email"],
+/* input[type="email"],
 input[type="text"],
 input[type="password"],
 input[type="search"],
@@ -25,7 +25,7 @@ input[type="number"] {
 }
 
 /* Only apply white text in dark mode */
-html[data-theme="dark"] input,
+/* html[data-theme="dark"] input,
 html[data-theme="dark"] textarea,
 html[data-theme="dark"] select {
   color: white !important;
@@ -44,7 +44,7 @@ html[data-theme="dark"] input[type="number"] {
   -webkit-text-fill-color: white !important;
 }
 
-/* Fix for Safari and iOS */
+Fix for Safari and iOS
 @media not all and (min-resolution: 0.001dpcm) {
   @supports (-webkit-appearance: none) {
     input[type="email"],
@@ -59,4 +59,4 @@ html[data-theme="dark"] input[type="number"] {
       -webkit-text-fill-color: white !important;
     }
   }
-}
+} */

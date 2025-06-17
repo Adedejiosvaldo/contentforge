@@ -139,6 +139,7 @@ export default function SignUp() {
               <Input
                 {...register("name")}
                 isClearable
+                className="text-red-500"
                 label="Full Name"
                 placeholder="Enter your full name"
                 type="text"
@@ -147,7 +148,9 @@ export default function SignUp() {
                 errorMessage={errors.name?.message}
                 onValueChange={() => clearErrors("name")}
                 classNames={{
-                  input: "text-red-500", // Target the actual input element
+                  input: "text-white",
+                  label: "text-red-500", // Target the actual input element
+                  // Target the actual input element
                 }}
               />
               <Input
