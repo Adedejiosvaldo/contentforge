@@ -1,7 +1,7 @@
 //import type { Config } from "tailwindcss";
 import { heroui } from "@heroui/react";
 
-export default {
+module.exports = {
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -17,5 +17,5 @@ export default {
     },
   },
   plugins: [heroui()],
-} 
+};
 // } satisfies Config;
