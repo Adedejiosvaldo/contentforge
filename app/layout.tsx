@@ -1,5 +1,5 @@
-import "./globals.css";
-import "./input-fix.css";
+import "./styles/globals.css";
+import "./styles/input-fix.css";
 import type { Metadata } from "next";
 import { Cabin } from "next/font/google";
 import { ThemeProvider } from "./context/ThemeProvider";
