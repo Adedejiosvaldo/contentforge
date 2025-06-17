@@ -6,6 +6,22 @@ import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
 
+// Extend NextAuth types
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id: string;
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+    };
+  }
+
+  interface JWT {
+    id: string;
+  }
+}
+
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
@@ -26,13 +42,18 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) return null;
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
-        if (!user || !user.password) return null;
+
+        if (!user) {
+          throw new Error("No user found with the provided email");
+        }
         const isValid = await compare(credentials.password, user.password);
-        if (!isValid) return null;
+        if (!isValid) throw new Error("Invalid password");
         return user;
       },
     }),
@@ -57,14 +78,29 @@ export const authOptions: NextAuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Prevent redirecting to API routes
-      if (url.startsWith(baseUrl)) {
-        if (url.includes("/api/")) {
-          return baseUrl + "/dashboard";
-        }
+      // The `url` parameter is the URL that the user would normally be redirected to.
+      // The `baseUrl` is the site's base URL.
+
+      // If the callbackUrl from signIn (on signup page) was "/setup",
+      // then `url` here would be `baseUrl + "/setup"`.
+      if (url.startsWith(baseUrl + "/setup")) {
+        return url; // Allow redirection to /setup
+      }
+
+      // If it's a relative URL (e.g. from a protected page access attempt)
+      // and it's not /setup, let it proceed if it's an internal link.
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+
+      // If it's an absolute URL on the same origin
+      if (new URL(url).origin === baseUrl) {
         return url;
       }
-      return baseUrl;
+
+      // For any other case (e.g. OAuth without specific callback, or error states redirecting)
+      // redirect to a sensible default.
+      return baseUrl + "/dashboard";
     },
   },
   secret: process.env.NEXTAUTH_SECRET,

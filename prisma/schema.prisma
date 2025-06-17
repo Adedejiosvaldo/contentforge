@@ -6,12 +6,12 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id                String   @id @default(cuid())
+  id                String @map("_id")  @id @default(cuid())
   name              String?
   email             String   @unique
   emailVerified     DateTime?
@@ -46,7 +46,7 @@ model User {
 }
 
 model UserAudience {
-  id        String   @id @default(cuid())
+  id        String   @id @map("_id") @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   audience  String
@@ -55,7 +55,7 @@ model UserAudience {
 }
 
 model UserBrandVoice {
-  id        String   @id @default(cuid())
+  id        String   @id @map("_id") @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   voice     String
@@ -64,7 +64,7 @@ model UserBrandVoice {
 }
 
 model UserInterest {
-  id        String   @id @default(cuid())
+  id        String   @id @map("_id") @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   interest  String
@@ -73,7 +73,7 @@ model UserInterest {
 }
 
 model Account {
-  id                 String  @id @default(cuid())
+  id                 String @map("_id") @id @default(cuid())
   userId             String
   type               String
   provider           String
@@ -91,7 +91,7 @@ model Account {
 }
 
 model Session {
-  id           String   @id @default(cuid())
+  id           String   @id  @map("_id") @default(cuid())
   sessionToken String   @unique
   userId       String
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -99,7 +99,7 @@ model Session {
 }
 
 model Post {
-  id        String   @id @default(cuid())
+  id        String   @id @map("_id") @default(cuid())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   platform  String

@@ -70,7 +70,7 @@ export default function SignUp() {
       await signIn("credentials", {
         email: data.email,
         password: data.password,
-        callbackUrl: "/",
+        callbackUrl: "/setup", // Changed from "/" to "/setup"
       });
     } catch (err) {
       setGeneralError("An unexpected error occurred. Please try again.");
