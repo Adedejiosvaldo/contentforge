@@ -148,7 +148,6 @@ export default function Login() {
               <Input
                 {...register("email")}
                 isClearable
-                className="w-full text-white"
                 label="Email"
                 placeholder="Enter your email"
                 type="email"
@@ -156,11 +155,13 @@ export default function Login() {
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
                 onValueChange={() => clearErrors("email")}
+                classNames={{
+                  input: "text-white", // Target the actual input element
+                }}
               />
               <Input
                 {...register("password")}
                 isClearable
-                className="w-full text-white"
                 label="Password"
                 placeholder="Enter your password"
                 type="password"
@@ -168,6 +169,9 @@ export default function Login() {
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
                 onValueChange={() => clearErrors("password")}
+                classNames={{
+                  input: "text-white", // Target the actual input element
+                }}
               />
               <Button
                 type="submit"

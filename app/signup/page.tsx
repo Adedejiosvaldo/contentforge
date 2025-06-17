@@ -139,7 +139,6 @@ export default function SignUp() {
               <Input
                 {...register("name")}
                 isClearable
-                className="w-full text-white"
                 label="Full Name"
                 placeholder="Enter your full name"
                 type="text"
@@ -147,11 +146,13 @@ export default function SignUp() {
                 isInvalid={!!errors.name}
                 errorMessage={errors.name?.message}
                 onValueChange={() => clearErrors("name")}
+                classNames={{
+                  input: "text-red-500", // Target the actual input element
+                }}
               />
               <Input
                 {...register("email")}
                 isClearable
-                className="w-full text-white border-white"
                 label="Email"
                 placeholder="Enter your email"
                 type="email"
@@ -159,11 +160,13 @@ export default function SignUp() {
                 isInvalid={!!errors.email}
                 errorMessage={errors.email?.message}
                 onValueChange={() => clearErrors("email")}
+                classNames={{
+                  input: "text-white", // Target the actual input element
+                }}
               />
               <Input
                 {...register("password")}
                 isClearable
-                className="w-full text-white"
                 label="Password"
                 placeholder="Enter your password"
                 type="password"
@@ -171,6 +174,9 @@ export default function SignUp() {
                 isInvalid={!!errors.password}
                 errorMessage={errors.password?.message}
                 onValueChange={() => clearErrors("password")}
+                classNames={{
+                  input: "text-white", // Target the actual input element
+                }}
               />
               <div className="flex items-center">
                 <input

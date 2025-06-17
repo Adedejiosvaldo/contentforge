@@ -1,8 +1,7 @@
 /* Force input text colors with !important flags */
-input,
+/* input,
 textarea,
 select {
-  color: black !important;
   -webkit-text-fill-color: black !important;
   caret-color: black !important;
 }
@@ -11,7 +10,7 @@ input::placeholder,
 textarea::placeholder {
   color: #6c757d !important;
   opacity: 0.7 !important;
-}
+} */
 
 /* More specific selectors for email, text and password inputs */
 input[type="email"],
