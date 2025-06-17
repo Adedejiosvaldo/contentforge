@@ -139,7 +139,7 @@ export default function SignUp() {
               <Input
                 {...register("name")}
                 isClearable
-                className="w-full"
+                className="w-full text-white"
                 label="Full Name"
                 placeholder="Enter your full name"
                 type="text"
@@ -151,7 +151,7 @@ export default function SignUp() {
               <Input
                 {...register("email")}
                 isClearable
-                className="w-full"
+                className="w-full text-white border-white"
                 label="Email"
                 placeholder="Enter your email"
                 type="email"
@@ -163,7 +163,7 @@ export default function SignUp() {
               <Input
                 {...register("password")}
                 isClearable
-                className="w-full"
+                className="w-full text-white"
                 label="Password"
                 placeholder="Enter your password"
                 type="password"
