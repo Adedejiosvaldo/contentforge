@@ -47,7 +47,7 @@ body {
 }
 
 /* Input field styling for better visibility in all themes */
-input,
+/* input,
 textarea,
 select {
   color: var(--text-color) !important;
@@ -57,7 +57,7 @@ input::placeholder,
 textarea::placeholder {
   color: var(--text-light);
   opacity: 0.6;
-}
+} */
 
 @layer components {
   .btn-primary {

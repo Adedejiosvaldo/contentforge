@@ -234,7 +234,7 @@ export default function SignUp() {
               </Button>
             </form>
 
-            <div className="relative flex items-center my-8">
+            {/* <div className="relative flex items-center my-8">
               <div className="flex-grow border-t border-[var(--border-color)]"></div>
               <span className="flex-shrink mx-4 text-sm text-[var(--text-light)]">
                 Or continue with
@@ -273,7 +273,7 @@ export default function SignUp() {
                 </svg>
                 <span className="text-sm text-[var(--text-color)]">GitHub</span>
               </button>
-            </div>
+            </div> */}
 
             <div className="mt-8 text-center">
               <p className="text-sm text-[var(--text-light)]">

@@ -184,7 +184,7 @@ export default function Login() {
               </Button>
             </form>
 
-            <div className="relative flex items-center my-8">
+            {/* <div className="relative flex items-center my-8">
               <div className="flex-grow border-t border-[var(--border-color)]"></div>
               <span className="flex-shrink mx-4 text-sm text-[var(--text-light)]">
                 Or continue with
@@ -239,7 +239,7 @@ export default function Login() {
                 </svg>
                 <span className="text-sm text-[var(--text-color)]">GitHub</span>
               </button>
-            </div>
+            </div> */}
 
             <div className="mt-8 text-center">
               <p className="text-sm text-[var(--text-light)]">
@@ -257,7 +257,7 @@ export default function Login() {
       </main>
 
       <footer className="w-full py-4 text-center text-sm text-[var(--text-light)]">
-        <p>© 2024 ContentCraft. All rights reserved.</p>
+        <p>© 2025 ContentCraft. All rights reserved.</p>
       </footer>
     </div>
   );

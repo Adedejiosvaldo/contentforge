@@ -64,9 +64,14 @@ function CreateContentForm() {
   useEffect(() => {
     const promptFromTemplate = searchParams.get("prompt");
     if (promptFromTemplate) {
-      setValue("prompt", decodeURIComponent(promptFromTemplate), {
-        shouldValidate: true,
-      });
+      try {
+        const decodedPrompt = decodeURIComponent(promptFromTemplate);
+        setValue("prompt", decodedPrompt, {
+          shouldValidate: true,
+        });
+      } catch (e) {
+        console.error("[CreatePage] Error decoding prompt from URL:", e);
+      }
     }
   }, [searchParams, setValue]);
 
@@ -203,14 +208,10 @@ function CreateContentForm() {
                 </label>
                 <Textarea
                   id="prompt"
-                  rows={10}
-                  {...register("prompt")} // Register with react-hook-form
-                  placeholder="Describe what you want to post about..."
-                  className={`w-full text-sm ${
-                    errors.prompt
-                      ? "border-red-500 focus:border-red-500 ring-red-500"
-                      : "border-[var(--border-color)] focus:border-[var(--primary-color)] focus:ring-[var(--primary-color)]"
-                  }`}
+                  {...register("prompt")}
+                  value={currentPrompt} // Explicitly set the value using the watched state
+                  placeholder="e.g., \'Create a Twitter thread about the future of AI in marketing...\'"
+                  className="w-full min-h-[120px]" // Adjusted min-height
                 />
                 {errors.prompt && (
                   <p className="text-xs text-red-500 mt-1">
