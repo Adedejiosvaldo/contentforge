@@ -66,6 +66,9 @@ importers:
       autoprefixer:
         specifier: ^10.0.1
         version: 10.4.21(postcss@8.5.3)
+      bcryptjs`:
+        specifier: link:@types/bcryptjs`
+        version: link:@types/bcryptjs`
       eslint:
         specifier: ^8
         version: 8.57.1

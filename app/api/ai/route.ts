@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"; // Adjust path as needed
 import { prisma } from "@/app/prisma"; // Corrected prisma import
+import { authOptions } from "../auth/[...nextauth]/authOptions";
 
 // Define a type for the user interest if not already defined elsewhere
 interface UserInterest {
