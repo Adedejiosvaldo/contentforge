@@ -1,7 +1,7 @@
-import type { Metadata } from "next";
-import { Cabin } from "next/font/google";
 import "./globals.css";
 import "./input-fix.css";
+import type { Metadata } from "next";
+import { Cabin } from "next/font/google";
 import { ThemeProvider } from "./context/ThemeProvider";
 import InputStyleFix from "./components/InputStyleFix";
 import { Providers } from "./providers/app.providers";
