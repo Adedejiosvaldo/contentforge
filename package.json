@@ -17,6 +17,7 @@
     "@heroui/theme": "^2.4.15",
     "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.8.2",
+    "@vercel/analytics": "^1.5.0",
     "bcryptjs": "^2.4.3",
     "framer-motion": "^12.12.2",
     "next": "14.0.4",

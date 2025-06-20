@@ -5,6 +5,7 @@ import { Cabin } from "next/font/google";
 import { ThemeProvider } from "./context/ThemeProvider";
 import InputStyleFix from "./components/InputStyleFix";
 import { Providers } from "./providers/app.providers";
+import { Analytics } from "@vercel/analytics/next";
 
 // const geistSans = Geist({
 //   variable: "--font-geist-sans",
@@ -37,6 +38,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Providers>{children}</Providers>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
