@@ -38,7 +38,7 @@ export default function RootLayout({
         <ThemeProvider>
           <Providers>{children}</Providers>
         </ThemeProvider>
-        <Analytics />
+        <Analytics mode="production" />
       </body>
     </html>
   );
